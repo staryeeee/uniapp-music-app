@@ -43,8 +43,14 @@
 		},
 		data() {
 			return {
+				isShow: this.show,
 				isPlay: false,
 				playSlider: 30
+			}
+		},
+		watch: {
+			show(val) {
+				this.isShow = val
 			}
 		},
 		methods: {

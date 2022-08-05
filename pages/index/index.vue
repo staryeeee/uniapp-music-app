@@ -110,7 +110,7 @@
 			return {
 				isShowMusic: false,
 				isShowTrans: false,
-				page: 'recent-list',
+				page: 'home',
 			}
 		},
 		onLoad() {

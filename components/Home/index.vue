@@ -1,101 +1,101 @@
 <template>
 	<view class="home-view">
 		<u-swiper :list="swiperList" keyName="imgUrl" :displayMultipleItems="1" indicator indicatorMode="dot" previousMargin="60" nextMargin="60" :height="200" circular :autoplay="false" radius="5" bgColor="#ffffff"></u-swiper>
-		<view class="home-group">
+		<view v-if="musicList.length > 0" class="home-group">
 			<view class="group-head">
 				<text class="head-title">推荐歌单</text>
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="2" v-for="(item, index) in 12" :key="index">
+					<u-col span="2" v-for="(item, index) in musicList" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
-								<text class="col-text text-ellipsis">{{ index == 0 ? '每日歌曲推荐' : '[华语私人订制]最懂你的话语推荐 每日更新歌单 每日更新歌单'}}</text>
+								<text class="col-text text-ellipsis">{{ item.name }}</text>
 							</view>
 						</view>
 					</u-col>
 				</u-row>
 			</view>
 		</view>
-		<view class="home-group group-dujia">
+		<view v-if="dujiaList.length > 0" class="home-group group-dujia">
 			<view class="group-head">
 				<text class="head-title">独家放送</text>
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="3" v-for="(item, index) in 4" :key="index">
+					<u-col span="3" v-for="(item, index) in dujiaList" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
-								<text class="col-text text-ellipsis">《超级面对面》第10期 keshi：我的音乐永远新鲜</text>
+								<text class="col-text text-ellipsis">{{ item.name }}</text>
 							</view>
 						</view>
 					</u-col>
 				</u-row>
 			</view>
 		</view>
-		<view class="home-group group-zuixin">
+		<view v-if="zuixinList.length > 0" class="home-group group-zuixin">
 			<view class="group-head">
 				<text class="head-title">最新音乐</text>
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="6" v-for="(item, index) in 10" :key="index">
+					<u-col span="6" v-for="(item, index) in zuixinList" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 							</view>
 							<view class="col-idx">
 								<text class="idx-text">{{  index >= 9 ? index + 1 : '0' + (index + 1) }}</text>
 							</view>
 							<view class="col-block">
-								<text class="col-title text-wrap">浪迹天涯</text>
-								<text class="col-text text-wrap">旅行乐队</text>
+								<text class="col-title text-wrap">{{ item.name }}</text>
+								<text v-if="item.song && item.song.album" class="col-text text-wrap">{{ item.song.album.name }}</text>
 							</view>
 						</view>
 					</u-col>
 				</u-row>
 			</view>
 		</view>
-		<view class="home-group group-tuijian">
+		<view v-if="mvList.length > 0" class="home-group group-tuijian">
 			<view class="group-head">
 				<text class="head-title">推荐 MV</text>
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="3" v-for="(item, index) in 4" :key="index">
+					<u-col span="3" v-for="(item, index) in mvList" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
-								<text class="col-title text-wrap">Munafik</text>
-								<text class="col-text text-wrap">Shen</text>
+								<text class="col-title text-wrap">{{ item.name }}</text>
+								<text class="col-text text-wrap">{{ item.artistName }}</text>
 							</view>
 						</view>
 					</u-col>
 				</u-row>
 			</view>
 		</view>
-		<view class="home-group group-diantai">
+		<view v-if="diantaiList.length > 0" class="home-group group-diantai">
 			<view class="group-head">
 				<text class="head-title">主播电台</text>
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="6" v-for="(item, index) in 4" :key="index">
+					<u-col span="6" v-for="(item, index) in diantaiList" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
-								<text class="col-title text-wrap">【独家】墨菲定律音乐博客</text>
-								<text class="col-text text-wrap">墨菲定律的音乐后花园(MoreFeel Music Round)</text>
+								<text class="col-title text-wrap">{{ item.name }}</text>
+								<text class="col-text text-wrap">{{ item.copywriter }}</text>
 							</view>
 						</view>
 					</u-col>
@@ -111,7 +111,7 @@
 					<u-col span="3" v-for="(item, index) in 4" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
 								<text class="col-text text-wrap">传说是灵魂割手传说是灵魂割手</text>
@@ -125,42 +125,85 @@
 </template>
 
 <script>
+	import {
+		fetchBanner,
+		fetchPersonalized,
+		fetchPersonalizedPrivatecontentList,
+		fetchPersonalizedMV,
+		fetchPersonalizedNewsong,
+		fetchPersonalizedDjprogram,
+		fetchProgramRecommend
+	} from '@/api/music'
+	
 	export default {
 		data() {
 			return {
 				title: 'home',
-				swiperList: [{
-					title: '内容 A',
-					imgUrl: 'http://p1.music.126.net/Srx6b0FP8S0kiOw1Zds3yQ==/109951167726062825.jpg?imageView&quality=89'
-				}, {
-					title: '内容 B',
-					imgUrl: 'http://p1.music.126.net/z4ojoJkXKAlPsBCGe1GN-g==/109951167726073664.jpg?imageView&quality=89'
-				}, {
-					title: '内容 C',
-					imgUrl: 'http://p1.music.126.net/-Q7-4JJnpx9h7lXAzEwLZQ==/109951167726072905.jpg?imageView&quality=89'
-				}, {
-					title: '内容 D',
-					imgUrl: 'http://p1.music.126.net/_jfDcxP0F9eUdQklBK1ReQ==/109951167726083229.jpg?imageView&quality=89'
-				}, {
-					title: '内容 E',
-					imgUrl: 'http://p1.music.126.net/ZKSlILlJmZlPAdtjQ4_kww==/109951167726095678.jpg?imageView&quality=89'
-				}, {
-					title: '内容 F',
-					imgUrl: 'http://p1.music.126.net/s954zUZ6_LqGuG-pCoVI6Q==/109951167726093887.jpg?imageView&quality=89'
-				}, {
-					title: '内容 G',
-					imgUrl: 'http://p1.music.126.net/-Ik_9Kc98emdeogKpncFpw==/109951167726099143.jpg?imageView&quality=89'
-				}, {
-					title: '内容 G',
-					imgUrl: 'http://p1.music.126.net/POKYbyNIlU31OSkECHrI0w==/109951167726104173.jpg?imageView&quality=89'
-				}],
+				swiperList: [],
+				
+				musicList: [],
+				dujiaList: [],
+				zuixinList: [],
+				mvList: [],
+				diantaiList: []
 			}
 		},
-		onLoad() {
-	
+		created() {
+			this.getBanner()
+			this.getMusicList()
+			this.getDujiaList()
+			this.getZuixinList()
+			this.getMVList()
+			this.getDiantaiList()
 		},
 		methods: {
-	
+			getBanner() {
+				fetchBanner({
+					type: 0
+				}).then(res => {
+					this.swiperList = res.banners.map(item => {
+						return {
+							title: item.typeTitle,
+							imgUrl: item.imageUrl
+						}
+					})
+				})
+			},
+			getMusicList() {
+				fetchPersonalized({
+					limit: 10
+				}).then(res => {
+					this.musicList = res.result
+				})
+			},
+			getDujiaList() {
+				fetchPersonalizedPrivatecontentList({
+					limit: 4
+				}).then(res => {
+					this.dujiaList = res.result
+				})
+			},
+			getZuixinList() {
+				fetchPersonalizedNewsong({
+					limit: 10
+				}).then(res => {
+					this.zuixinList = res.result
+				})
+			},
+			getMVList() {
+				fetchPersonalizedMV({
+					limit: 4
+				}).then(res => {
+					this.mvList = res.result
+				})
+			},
+			getDiantaiList() {
+				fetchPersonalizedDjprogram({
+					limit: 6
+				}).then(res => {
+					this.diantaiList = res.result
+				})
+			},
 		}
 	}
 </script>
@@ -192,6 +235,11 @@
 					
 					.u-col {
 						margin-bottom: 80rpx;
+						
+						&.u-col-2 {
+							flex: 0 0 20% !important;
+							width: calc(100%/10 * 2);
+						}
 					}
 					
 					.col-wrap {
@@ -211,6 +259,22 @@
 							.col-title {
 								display: block;
 								font-size: 28rpx;
+								
+								&.text-wrap {
+									overflow: hidden;
+									text-overflow: ellipsis;
+									white-space: nowrap;
+								}
+								
+								&.text-ellipsis {
+									height: 72rpx;
+									overflow: hidden;
+									text-overflow: ellipsis;
+									display: -webkit-box;
+									-webkit-box-orient: vertical;
+									-webkit-line-clamp: 2;
+									lines: 2;
+								}
 							}
 							
 							.col-text {
@@ -293,6 +357,10 @@
 				.group-body {
 					::v-deep .u-row {
 						margin-bottom: 0;
+						
+						.u-col {
+							margin-bottom: 0;
+						}
 						
 						.col-wrap {
 							padding: 22rpx 0;
