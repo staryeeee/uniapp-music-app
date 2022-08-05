@@ -1,5 +1,12 @@
 import App from './App'
 
+import TopMenu from '@/components/TopMenu'
+Vue.component('topMenu', TopMenu)
+import LeftMenu from '@/components/LeftMenu'
+Vue.component('leftMenu', LeftMenu)
+import uView from '@/uni_modules/uview-ui'
+Vue.use(uView)
+
 // #ifndef VUE3
 import Vue from 'vue'
 Vue.config.productionTip = false
