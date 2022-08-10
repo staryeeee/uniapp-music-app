@@ -1,58 +1,43 @@
 <template>
 	<view class="hot-list-view">
 		<view class="hot-list-body">
-			<view class="hot-group group-guanfang">
+			<view v-if="guanfangList.length > 0" class="hot-group group-guanfang">
 				<view class="group-head">
 					<text class="head-title">官方榜</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="12" v-for="(item, index) in 4" :key="index">
+						<u-col span="12" v-for="(item, index) in guanfangList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.coverImgUrl"></image>
 								</view>
 								<view class="col-block">
-									<view class="col-cell">
+									<view v-if="false" class="col-cell">
 										<text class="cell-title"><text class="title-num">1</text> 对你说</text>
 										<text class="cell-text">张茜</text>
 									</view>
-									<view class="col-cell">
-										<text class="cell-title"><text class="title-num">2</text> 灰色人生</text>
-										<text class="cell-text">张茜</text>
-									</view>
-									<view class="col-cell">
-										<text class="cell-title"><text class="title-num">3</text> 阴天快乐</text>
-										<text class="cell-text">张茜</text>
-									</view>
-									<view class="col-cell">
-										<text class="cell-title"><text class="title-num">4</text> 不得不撤</text>
-										<text class="cell-text">张茜</text>
-									</view>
-									<view class="col-cell">
-										<text class="cell-title"><text class="title-num">5</text> 遗失的心跳</text>
-										<text class="cell-text">张茜</text>
-									</view>
-									<text class="col-text">查看全部</text>
+									<text class="col-title text-ellipsis">{{ item.description }}</text>
+									<text class="col-text text-wrap">{{ item.updateFrequency }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="hot-group group-quanqiu">
+			<view v-if="quanqiuList.length > 0" class="hot-group group-quanqiu">
 				<view class="group-head">
 					<text class="head-title">全球榜</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="3" v-for="(item, index) in 20" :key="index">
+						<u-col span="3" v-for="(item, index) in quanqiuList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.coverImgUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-title text-wrap">黑胶 VIP 爱听榜</text>
+									<text class="col-title text-wrap">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
@@ -64,18 +49,35 @@
 </template>
 
 <script>
+	import {
+		fetchToplist
+	} from '@/api/music'
+	
 	export default {
+		name: 'hot-list',
 		data() {
 			return {
-				name: 'hot-list'
+				guanfangList: [],
+				quanqiuList: []
 			}
+		},
+		methods: {
+			getHotList() {
+				fetchToplist().then(res => {
+					this.guanfangList = res.list.slice(0, 4)
+					this.quanqiuList = res.list.slice(4)
+				})
+			}
+		},
+		mounted() {
+			this.getHotList()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.hot-list-view {
-		padding: 40rpx 60rpx;
+		padding: 40rpx 60rpx 140rpx 60rpx;
 		
 		.hot-list-body {
 			.hot-group {
@@ -123,6 +125,25 @@
 								.col-title {
 									display: block;
 									font-size: 28rpx;
+									line-height: 36rpx;
+									color: #444;
+									
+									&.text-wrap {
+										height: 36rpx;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										white-space: nowrap;
+									}
+									
+									&.text-ellipsis {
+										height: 72rpx;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										display: -webkit-box;
+										-webkit-box-orient: vertical;
+										-webkit-line-clamp: 2;
+										lines: 2;
+									}
 								}
 								
 								.col-text {
@@ -132,6 +153,7 @@
 									color: $uni-text-color;
 									
 									&.text-wrap {
+										height: 36rpx;
 										overflow: hidden;
 										text-overflow: ellipsis;
 										white-space: nowrap;

@@ -1,22 +1,34 @@
 import {
-    API_SERVER
+    API_SERVER,
+	UNIAPP_KEY
 } from '@/config/index'
 import {
-    getHeaders
+    getAuth
 } from '@/utils/index'
 
 export default function request(options) {
-    let header = getHeaders()
     return new Promise((resolve, reject) => {
+		let auth = getAuth(),
+			url = API_SERVER + options.url
+		if (auth.cookie) {
+			url += '?cookie=' + encodeURIComponent(auth.cookie)
+		}
+		if (auth.cookie && auth.token) {
+			url + '&'
+		}
+		if (auth.token) {
+			url += 'token=' + auth.token
+		}
         uni.request({
-            url: API_SERVER + options.url,
+            url,
             method: options.method,
             data: options.method.toLowerCase() !== 'get' ? JSON.stringify(options.data) : options.data,
-            header,
+            header: {},
             timeout: 10000,
             dataType: options.dataType || 'json',
             responseType: options.responseType || 'text',
             cache: 'no-cache',
+			withCredentials: false,
             success(res) {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
                     resolve(res.data)

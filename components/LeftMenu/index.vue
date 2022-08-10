@@ -1,12 +1,20 @@
 <template>
 	<view class="left-menu-view">
 		<view class="left-menu-content">
-			<view class="nav-user">
+			<view v-if="!userInfo.userId" class="nav-user" @click="handleUser">
 				<view class="user-avatar">
 					<uni-icons class="icon-user" type="person" size="20"></uni-icons>
 				</view>
 				<view class="user-info">
 					<text class="user-title">未登录</text>
+				</view>
+			</view>
+			<view v-if="userInfo.userId" class="nav-user">
+				<view class="user-avatar">
+					<image class="img-avatar" mode="aspectFill" :src="userInfo.avatarUrl"></image>
+				</view>
+				<view class="user-info">
+					<text class="user-title">{{ userInfo.nickname }}</text>
 				</view>
 			</view>
 			<view class="nav-list">
@@ -62,6 +70,11 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions
+	} from 'vuex'
+	
 	export default {
 		name: 'left-menu',
 		props: {
@@ -72,7 +85,7 @@
 		},
 		data() {
 			return {
-				navName: this.value
+				navName: this.value,
 			}
 		},
 		watch: {
@@ -80,7 +93,16 @@
 				this.navName = this.value
 			}
 		},
+		computed: {
+			...mapState('auth', ['cookie', 'token', 'userInfo'])
+		},
 		methods: {
+			handleUser() {
+				console.log(1)
+				if (true) {
+					this.$emit('auth', 'signin')
+				}
+			},
 			handleMenuTo(data) {
 				this.navName = data
 				this.$emit('change', data)
@@ -105,15 +127,24 @@
 				flex-direction: row;
 				
 				.user-avatar {
+					display: flex;
+					justify-content: center;
+					align-items: center;
 					width: 80rpx;
 					height: 80rpx;
 					line-height: 80rpx;
-					text-align: center;
 					background-color: #dcdcdc;
 					border-radius: 50%;
 					
 					.icon-user {
 						font-size: 60rpx;
+					}
+					
+					.img-avatar {
+						width: 80rpx;
+						height: 80rpx;
+						border-radius: 50%;
+						overflow: hidden;
 					}
 				}
 				

@@ -1,23 +1,24 @@
 <template>
 	<view class="song-list-view">
 		<view class="song-list-top">
-			<view class="top-wrap">
+			<view class="top-wrap" v-for="(item, index) in bannerList" :key="index">
 				<view class="top-img-top">
-					<image class="img-top" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+					<image class="img-top" mode="aspectFill" :src="item.coverImgUrl"></image>
 				</view>
 				<view class="top-block">
-					<text class="top-badge">精品推荐</text>
-					<text class="top-title text-wrap">【独家】墨菲定律音乐博客</text>
+					<text class="top-badge">精品歌单</text>
+					<text class="top-title text-wrap">{{ item.name }}</text>
+					<text class="top-text">{{ item.description }}</text>
 				</view>
 			</view>
 		</view>
 		<div class="song-list-head">
 			<div class="head-left">
-				<view class="head-filter">全部歌单</view>
+				<view class="head-filter" @click="handleNavChange('全部')">全部歌单</view>
 			</div>
 			<div class="head-right">
 				<view class="head-nav">
-					<view class="nav-item" v-for="(item, index) in navList" :key="index">
+					<view class="nav-item" :class="{ active: item.active }" v-for="(item, index) in navList" :key="index" @click="handleNavChange(item.title)">
 						<text class="nav-text">{{ item.title }}</text>
 					</view>
 				</view>
@@ -25,46 +26,119 @@
 		</div>
 		<view class="song-list-body">
 			<u-row>
-				<u-col span="3" v-for="(item, index) in 20" :key="index">
+				<u-col span="3" v-for="(item, index) in musicList" :key="index">
 					<view class="col-wrap">
 						<view class="col-img-top">
-							<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+							<image class="img-col" mode="aspectFill" :src="item.coverImgUrl"></image>
 						</view>
 						<view class="col-block">
-							<text class="col-text text-ellipsis">《超级面对面》第10期 keshi：我的音乐永远新鲜</text>
+							<text class="col-text text-ellipsis">{{ item.name }}</text>
 						</view>
 					</view>
 				</u-col>
 			</u-row>
 		</view>
+		<view v-show="musicList.length > 0 && total > pageSize" class="song-list-pagination">
+			<uni-pagination title="" type="line" :total="this.total" :pageSize="this.pageSize" @change="handlePageChange"></uni-pagination>
+		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		fetchTopPlaylistHighquality,
+		fetchPlaylistCatlist,
+		fetchTopPlaylist
+	} from '@/api/music'
+	
 	export default {
 		name: 'song-list',
 		data() {
 			return {
+				bannerList: [],
+				
 				navList: [
-					{ title: '华语' },
-					{ title: '流行' },
-					{ title: '摇滚' },
-					{ title: '民谣' },
-					{ title: '电子' },
-					{ title: '另类/独立' },
-					{ title: '轻音乐' },
-					{ title: '综艺' },
-					{ title: '影视原声' },
-					{ title: 'ACG' }
-				]
+					{ active: false, title: '华语' },
+					{ active: false, title: '流行' },
+					{ active: false, title: '摇滚' },
+					{ active: false, title: '民谣' },
+					{ active: false, title: '电子' },
+					{ active: false, title: '另类/独立' },
+					{ active: false, title: '轻音乐' },
+					{ active: false, title: '综艺' },
+					{ active: false, title: '影视原声' },
+					{ active: false, title: 'ACG' }
+				],
+				
+				cat: '全部',
+				
+				listLoading: false,
+				isMore: false,
+				pageSize: 20,
+				offset: 0,
+				total: 0,
+				musicList: []
 			}
+		},
+		methods: {
+			handleNavChange(data) {
+				this.navList = this.navList.map((item, index) => {
+					item.active = false
+					if (item.title == data) {
+						item.active = true
+					}
+					return item
+				})
+				this.cat = data
+				this.getBanner()
+				this.musicList = []
+				this.getMusicList()
+			},
+			getMusicCateList() {
+				fetchPlaylistCatlist().then(res => {
+					
+				})
+			},
+			getMusicList() {
+				if (this.listLoading) return
+				this.listLoading = true
+				fetchTopPlaylist({
+					cat: this.cat,
+					offset: this.offset,
+					limit: this.pageSize
+				}).then(res => {
+					this.isMore = res.more
+					this.musicList = res.playlists
+					this.total = res.total
+				}).finally(() => {
+					this.listLoading = false
+				})
+			},
+			handlePageChange(data) {
+				this.offset = (data.current - 1) * this.pageSize
+				this.musicList = []
+				this.getMusicList()
+			},
+			getBanner() {
+				fetchTopPlaylistHighquality({
+					cat: this.cat,
+					limit: 1
+				}).then(res => {
+					this.bannerList = res.playlists
+				})
+			}
+		},
+		mounted() {
+			this.getBanner()
+			this.getMusicCateList()
+			this.getMusicList()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.song-list-view {
-		padding: 40rpx 60rpx;
+		padding: 40rpx 60rpx 160rpx 60rpx;
 		
 		.song-list-top {
 			padding: 30rpx;
@@ -89,7 +163,7 @@
 				
 				.top-block {
 					margin-left: 20rpx;
-					padding-top: 40rpx;;
+					padding-top: 20rpx;;
 					
 					.top-badge {
 						display: inline-block;
@@ -116,6 +190,20 @@
 							text-overflow: ellipsis;
 							white-space: nowrap;
 						}
+					}
+					
+					.top-text {
+						margin-top: 20rpx;
+						font-size: 26rpx;
+						line-height: 36rpx;
+						height: 72rpx;
+						color: #ccc;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+						lines: 2;
 					}
 				}
 			}
@@ -153,6 +241,12 @@
 						.nav-text {
 							font-size: 24rpx;
 							color: #777;
+						}
+						
+						&.active {
+							.nav-text {
+								color: #cb3631;
+							}
 						}
 					}
 				}

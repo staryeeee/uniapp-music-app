@@ -5,6 +5,11 @@
 			"style": {
 				"navigationBarTitleText": ""
 			}
+		}, {
+			"path": "pages/music/index",
+			"style": {
+				"navigationBarTitleText": ""
+			}
 		}
     ],
 	"globalStyle": {

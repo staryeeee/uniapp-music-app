@@ -1,142 +1,141 @@
 <template>
 	<view class="radio-list-view">
-		<u-swiper :list="swiperList" keyName="imgUrl" :displayMultipleItems="1" indicator indicatorMode="dot" previousMargin="60" nextMargin="60" :height="200" circular :autoplay="false" radius="5" bgColor="#ffffff"></u-swiper>
+		<u-swiper :list="bannerList" keyName="pic" :displayMultipleItems="1" indicator indicatorMode="dot" previousMargin="60" nextMargin="60" :height="200" circular :autoplay="false" radius="5" bgColor="#ffffff"></u-swiper>
 		
 		<view class="radio-list-tabs">
-			<u-tabs :list="tabList" :lineHeight="0">
-			</u-tabs>
+			<u-tabs :list="tabList" keyName="categoryName" :lineHeight="0"></u-tabs>
 		</view>
 		<view class="radio-list-body">
-			<view class="radio-group group-jingpin">
+			<view v-if="fufeijingpinList.length > 0" class="radio-group group-jingpin">
 				<view class="group-head">
 					<text class="head-title">付费精品</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="6" v-for="(item, index) in 4" :key="index">
+						<u-col span="6" v-for="(item, index) in fufeijingpinList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-title text-wrap">广播剧《青梅屿》</text>
-									<text class="col-text text-wrap">小麻雀与大狼狗的夏日恋爱物语</text>
-									<text class="col-text text-wrap">青梅屿 第12集</text>
-									<text class="col-price text-wrap">¥ 12.9</text>
+									<text class="col-title text-wrap">{{ item.name }}</text>
+									<text class="col-text text-wrap">{{ item.rcmdText }}</text>
+									<text class="col-text text-wrap">{{ item.lastProgramName }}</text>
+									<text class="col-price text-wrap">¥ {{ item.originalPrice/100 }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="radio-group group-tuijian">
+			<view v-if="tuijianList.length > 0" class="radio-group group-tuijian">
 				<view class="group-head">
 					<text class="head-title">电台个性推荐</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 5" :key="index">
+						<u-col span="2" v-for="(item, index) in tuijianList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-title text-wrap">广播剧《青梅屿》</text>
+									<text class="col-title text-wrap">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="radio-group group-youshengshu">
+			<view v-if="youshengshuList.length > 0" class="radio-group group-youshengshu">
 				<view class="group-head">
 					<text class="head-title">有声书</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 5" :key="index">
+						<u-col span="2" v-for="(item, index) in youshengshuList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-text text-ellipsis">校霸学神间接性灵魂互换</text>
+									<text class="col-text text-ellipsis">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="radio-group group-chuangzuo">
+			<view v-if="chuangzuofanchangList.length > 0" class="radio-group group-chuangzuo">
 				<view class="group-head">
 					<text class="head-title">创作翻唱</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 5" :key="index">
+						<u-col span="2" v-for="(item, index) in chuangzuofanchangList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-text text-ellipsis">校霸学神间接性灵魂互换</text>
+									<text class="col-text text-ellipsis">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="radio-group group-yinyue">
+			<view v-if="yinyuetuijianList.length > 0" class="radio-group group-yinyue">
 				<view class="group-head">
 					<text class="head-title">音乐推荐</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 5" :key="index">
+						<u-col span="2" v-for="(item, index) in yinyuetuijianList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-text text-ellipsis">校霸学神间接性灵魂互换</text>
+									<text class="col-text text-ellipsis">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="radio-group group-qinggan">
+			<view v-if="qingganList.length > 0" class="radio-group group-qinggan">
 				<view class="group-head">
 					<text class="head-title">情感</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 5" :key="index">
+						<u-col span="2" v-for="(item, index) in qingganList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-text text-ellipsis">校霸学神间接性灵魂互换</text>
+									<text class="col-text text-ellipsis">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
 					</u-row>
 				</view>
 			</view>
-			<view class="radio-group group-tuokouxiu">
+			<view v-if="tuokouxiuList.length > 0" class="radio-group group-tuokouxiu">
 				<view class="group-head">
 					<text class="head-title">脱口秀</text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 5" :key="index">
+						<u-col span="2" v-for="(item, index) in tuokouxiuList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="widthFix" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-text text-ellipsis">校霸学神间接性灵魂互换</text>
+									<text class="col-text text-ellipsis">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
@@ -148,20 +147,20 @@
 </template>
 
 <script>
+	import {
+		fetchDjBanner,
+		fetchDjCategoryRecommend,
+		fetchDjPaygift,
+		fetchDjPersonalizeRecommend,
+		fetchDjRadioHot,
+		fetchDjHot,
+	} from '@/api/music'
+	
 	export default {
 		data() {
 			return {
 				name: 'radio-list',
-				swiperList: [{
-					title: '内容 A',
-					imgUrl: 'http://p1.music.126.net/Srx6b0FP8S0kiOw1Zds3yQ==/109951167726062825.jpg?imageView&quality=89'
-				}, {
-					title: '内容 B',
-					imgUrl: 'http://p1.music.126.net/z4ojoJkXKAlPsBCGe1GN-g==/109951167726073664.jpg?imageView&quality=89'
-				}, {
-					title: '内容 C',
-					imgUrl: 'http://p1.music.126.net/-Q7-4JJnpx9h7lXAzEwLZQ==/109951167726072905.jpg?imageView&quality=89'
-				}],
+				bannerList: [],
 				tabList: [
 					{ name: '排行榜' },
 					{ name: '情感' },
@@ -184,15 +183,100 @@
 					{ name: '其他' },
 					{ name: '文学出版' },
 					{ name: '我要做主播' }
-				]
+				],
+				
+				fufeijingpinList: [],
+				tuijianList: [],
+				youshengshuList: [],
+				chuangzuofanchangList: [],
+				yinyuetuijianList: [],
+				qingganList: [],
+				tuokouxiuList: []
 			}
+		},
+		methods: {
+			getTuokouxiu() {
+				fetchDjRadioHot({
+					cateId: 8,
+					limit: 5
+				}).then(res => {
+					this.tuokouxiuList = res.djRadios.slice(0, 5)
+				})
+			},
+			getQinggan() {
+				fetchDjRadioHot({
+					cateId: 3,
+					limit: 5
+				}).then(res => {
+					this.qingganList = res.djRadios.slice(0, 5)
+				})
+			},
+			getYinyuetuijian() {
+				fetchDjRadioHot({
+					cateId: 2,
+					limit: 5
+				}).then(res => {
+					this.yinyuetuijianList = res.djRadios.slice(0, 5)
+				})
+			},
+			getChuangzuofanchang() {
+				fetchDjRadioHot({
+					cateId: 2001,
+					limit: 5
+				}).then(res => {
+					this.chuangzuofanchangList = res.djRadios.slice(0, 5)
+				})
+			},
+			getYoushengshu() {
+				fetchDjRadioHot({
+					cateId: 10001,
+					limit: 5,
+				}).then(res => {
+					this.youshengshuList = res.djRadios.slice(0, 5)
+				})
+			},
+			getTuijian() {
+				fetchDjPersonalizeRecommend({
+					limit: 5,
+				}).then(res => {
+					this.tuijianList = res.data || []
+				})
+			},
+			getFufeiJingpin() {
+				fetchDjPaygift({
+					limit: 4
+				}).then(res => {
+					this.fufeijingpinList = res.data.list || []
+				})
+			},
+			getCateList() {
+				fetchDjCategoryRecommend().then(res => {
+					this.tabList = res.data
+				})
+			},
+			getBanner() {
+				fetchDjBanner().then(res => {
+					this.bannerList = res.data || []
+				})
+			}
+		},
+		mounted() {
+			this.getBanner()
+			this.getCateList()
+			this.getFufeiJingpin()
+			this.getTuijian()
+			this.getYoushengshu()
+			this.getChuangzuofanchang()
+			this.getYinyuetuijian()
+			this.getQinggan()
+			this.getTuokouxiu()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.radio-list-view {
-		padding: 40rpx 60rpx;
+		padding: 40rpx 60rpx 140rpx 60rpx;
 		
 		::v-deep .u-swiper {
 		}

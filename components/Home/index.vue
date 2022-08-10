@@ -71,7 +71,7 @@
 					<u-col span="3" v-for="(item, index) in mvList" :key="index">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
+								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
 								<text class="col-title text-wrap">{{ item.name }}</text>
@@ -95,26 +95,7 @@
 							</view>
 							<view class="col-block">
 								<text class="col-title text-wrap">{{ item.name }}</text>
-								<text class="col-text text-wrap">{{ item.copywriter }}</text>
-							</view>
-						</view>
-					</u-col>
-				</u-row>
-			</view>
-		</view>
-		<view class="home-group group-look">
-			<view class="group-head">
-				<text class="head-title">LOOK 直播</text>
-			</view>
-			<view class="group-body">
-				<u-row>
-					<u-col span="3" v-for="(item, index) in 4" :key="index">
-						<view class="col-wrap">
-							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
-							</view>
-							<view class="col-block">
-								<text class="col-text text-wrap">传说是灵魂割手传说是灵魂割手</text>
+								<text v-if="item.program" class="col-text text-wrap">{{ item.program.description }}</text>
 							</view>
 						</view>
 					</u-col>
@@ -126,6 +107,8 @@
 
 <script>
 	import {
+		fetchHomepageBlockPage,
+		fetchHomepageDragonBall,
 		fetchBanner,
 		fetchPersonalized,
 		fetchPersonalizedPrivatecontentList,
@@ -136,9 +119,9 @@
 	} from '@/api/music'
 	
 	export default {
+		name: 'home',
 		data() {
 			return {
-				title: 'home',
 				swiperList: [],
 				
 				musicList: [],
@@ -149,6 +132,7 @@
 			}
 		},
 		created() {
+			this.getHomepageBlockPage()
 			this.getBanner()
 			this.getMusicList()
 			this.getDujiaList()
@@ -157,6 +141,11 @@
 			this.getDiantaiList()
 		},
 		methods: {
+			getHomepageBlockPage() {
+				fetchHomepageDragonBall().then(res => {
+					console.log(res)
+				})
+			},
 			getBanner() {
 				fetchBanner({
 					type: 0
@@ -210,7 +199,7 @@
 
 <style lang="scss" scoped>
 	.home-view {
-		padding: 40rpx 60rpx;
+		padding: 40rpx 60rpx 160rpx 60rpx;
 		
 		::v-deep .u-swiper {
 		}
@@ -259,8 +248,10 @@
 							.col-title {
 								display: block;
 								font-size: 28rpx;
+								line-height: 36rpx;
 								
 								&.text-wrap {
+									height: 36rpx;
 									overflow: hidden;
 									text-overflow: ellipsis;
 									white-space: nowrap;
@@ -284,6 +275,7 @@
 								color: $uni-text-color;
 								
 								&.text-wrap {
+									height: 36rpx;
 									overflow: hidden;
 									text-overflow: ellipsis;
 									white-space: nowrap;
@@ -308,6 +300,10 @@
 				.group-body {
 					::v-deep .u-row {
 						margin-bottom: 0;
+						
+						.u-col {
+							margin-bottom: 0;
+						}
 						
 						.col-wrap {
 							padding: 18rpx 0;
@@ -346,6 +342,20 @@
 									margin-top: 0;
 									font-size: 26rpx;
 									color: $uni-text-color-grey;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			&.group-tuijian {
+				.group-body {
+					::v-deep .u-row {
+						.col-wrap {
+							.col-img-top {
+								.img-col {
+									height: 200rpx;
 								}
 							}
 						}

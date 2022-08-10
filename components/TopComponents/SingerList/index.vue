@@ -4,7 +4,7 @@
 			<view class="singer-filter-wrap" v-for="(item, index) in filterList" :key="index">
 				<view class="filter-title">{{ item.title }}：</view>
 				<view class="filter-nav">
-					<view class="nav-item" :class="{ active: subIndex == 0 }" v-for="(subItem, subIndex) in item.children" :key="subIndex">
+					<view class="nav-item" :class="{ active: subIndex == 0 }" v-for="(subItem, subIndex) in item.children" :key="subIndex" @click="handleFilterChange(subItem.type)">
 						<text class="nav-text">{{ subItem.title }}</text>
 					</view>
 				</view>
@@ -13,17 +13,17 @@
 		<view class="singer-list-body">
 			<view class="singer-group group-quanqiu">
 				<view class="group-head">
-					<text class="head-title">全球榜</text>
+					<text class="head-title"></text>
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in 20" :key="index">
+						<u-col span="2" v-for="(item, index) in singerList" :key="index">
 							<view class="col-wrap">
 								<view class="col-img-top">
-									<image class="img-col" mode="aspectFill" src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-uni-app-doc/6acec660-4f31-11eb-a16f-5b3e54966275.jpg"></image>
+									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 								</view>
 								<view class="col-block">
-									<text class="col-title text-wrap">陈奕迅</text>
+									<text class="col-title text-wrap">{{ item.name }}</text>
 								</view>
 							</view>
 						</u-col>
@@ -35,18 +35,22 @@
 </template>
 
 <script>
+	import {
+		fetchToplistArtist
+	} from '@/api/music'
+	
 	export default {
+		name: 'singer-list',
 		data() {
 			return {
-				name: 'singer-list',
 				filterList: [
 					{ title: '语种', children: [
-						{ title: '全部' },
-						{ title: '华语' },
-						{ title: '欧美' },
-						{ title: '日本' },
-						{ title: '韩国' },
-						{ title: '其他' }
+						{ title: '全部', type: 0 },
+						{ title: '华语', type: 1 },
+						{ title: '欧美', type: 2 },
+						{ title: '韩国', type: 3 },
+						{ title: '日本', type: 4 },
+						{ title: '其他', type: 5 }
 					] },
 					{ title: '分类', children: [
 						{ title: '全部' },
@@ -84,15 +88,35 @@
 						{ title: 'Z' },
 						{ title: '#' }
 					] }
-				]
+				],
+				
+				type: '',
+				singerList: []
 			}
+		},
+		methods: {
+			handleFilterChange(data) {
+				this.type = data
+				this.singerList = []
+				this.getSingerList()
+			},
+			getSingerList() {
+				fetchToplistArtist({
+					type: this.type
+				}).then(res => {
+					this.singerList = res.list.artists
+				})
+			}
+		},
+		mounted() {
+			this.getSingerList()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.singer-list-view {
-		padding: 40rpx 60rpx;
+		padding: 40rpx 60rpx 140rpx 60rpx;
 		
 		.singer-list-head {
 			.singer-filter-wrap {
