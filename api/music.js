@@ -224,10 +224,26 @@ export function fetchPlaylistDetail(data) {
         data: data
     })
 }
+// 歌单详情动态
+export function fetchPlaylistDetailDynamic(data) {
+    return request({
+        url: '/playlist/detail/dynamic',
+        method: 'get',
+        data: data
+    })
+}
 // 歌单评论
 export function fetchCommentPlaylist(data) {
     return request({
         url: '/comment/playlist',
+        method: 'get',
+        data: data
+    })
+}
+// 歌单收藏者
+export function fetchPlaylistSubscribers(data) {
+    return request({
+        url: '/playlist/subscribers',
         method: 'get',
         data: data
     })

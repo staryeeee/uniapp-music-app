@@ -21,7 +21,12 @@
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
-		"pageOrientation": "landscape"
+		"pageOrientation": "landscape",
+		"app-plus": {
+			"statusbar": {  
+				"immersed": false  
+			}
+		}
 	},
 	"uniIdRouter": {},
 	"easycom": {

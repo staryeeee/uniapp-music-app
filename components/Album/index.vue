@@ -16,8 +16,8 @@
 				</view>
 				<view class="head-action">
 					<u-button class="btn-action" type="primary" shape="circle" icon="map" text="播放全部"></u-button>
-					<u-button class="btn-action" type="default" plain shape="circle" icon="plus" :text="'收藏(' + (playlist.subscribedCount || 0) + ')'"></u-button>
-					<u-button class="btn-action" type="default" plain shape="circle" icon="share" :text="'分享(' + (playlist.shareCount || 0) + ')'"></u-button>
+					<u-button class="btn-action" type="default" plain shape="circle" icon="plus" :text="'收藏(' + (playlistDynamic.bookedCount || 0) + ')'"></u-button>
+					<u-button class="btn-action" type="default" plain shape="circle" icon="share" :text="'分享(' + (playlistDynamic.shareCount || 0) + ')'"></u-button>
 					<u-button class="btn-action" type="default" plain shape="circle" icon="download" text="下载全部"></u-button>
 				</view>
 				<view class="head-info">
@@ -35,10 +35,10 @@
 		</view>
 		<view class="album-list-body">
 			<view class="body-tabs">
-				<u-tabs :list="tabList" keyName="title"></u-tabs>
+				<u-tabs :list="tabList" keyName="title" @change="handleTabChange"></u-tabs>
 			</view>
 			<view class="body-list">
-				<view class="music-list">
+				<view v-if="tabIdx == 0" class="music-list">
 					<view class="music-item">
 						<view class="music-num"></view>
 						<view class="music-title" style="color:#999;">音乐标题</view>
@@ -54,6 +54,49 @@
 						<view class="music-time">{{ item.dt | formatDate('mm:ss') }}</view>
 					</view>
 				</view>
+				<view v-if="tabIdx == 1" class="comment-group">
+					<view class="comment-media" v-for="(item, index) in commentList" :key="index">
+						<view class="media-img-left">
+							<image v-if="item.user" class="img-media" mode="aspectFill" :src="item.user.avatarUrl"></image>
+						</view>
+						<view class="media-block">
+							<view class="media-title">
+								<text class="title-author">{{ item.user ? item.user.nickname : '' }}：</text>{{ item.content }}
+							</view>
+							<view class="media-text">{{ item.timeStr }}</view>
+						</view>
+						<view class="media-action">
+							<view class="action-wrap">
+								<u-icon class="icon-action" name="thumb-up" size="16" color="#ccc"></u-icon> 1000
+							</view>
+							<view class="action-wrap">
+								<u-icon class="icon-action" name="share" size="16" color="#ccc"></u-icon>
+							</view>
+							<view class="action-wrap">
+								<u-icon class="icon-action" name="chat" size="16" color="#ccc"></u-icon>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view v-if="tabIdx == 2" class="subscriber-group">
+					<u-row>
+						<u-col span="6" v-for="(item, index) in subscriberList" :key="index">
+							<view class="subscriber-wrap">
+								<view class="subscriber-img-left">
+									<image class="img-subscriber" mode="aspectFill" :src="item.avatarUrl"></image>
+								</view>
+								<view class="subscriber-block">
+									<view class="subscriber-title">
+										{{ item.nickname }}
+										<u-icon v-if="item.gender == 2" class="icon-gender" name="woman" color="#df3b77" size="14"></u-icon>
+										<u-icon v-if="item.gender == 1" class="icon-gender" name="man" color="#3290c6" size="14"></u-icon>
+									</view>
+									<view class="subscriber-text">{{ item.description }}</view>
+								</view>
+							</view>
+						</u-col>
+					</u-row>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -64,7 +107,10 @@
 		mapActions
 	} from 'vuex'
 	import {
-		fetchPlaylistDetail
+		fetchPlaylistDetail,
+		fetchCommentPlaylist,
+		fetchPlaylistDetailDynamic,
+		fetchPlaylistSubscribers
 	} from '@/api/music'
 	
 	export default {
@@ -77,14 +123,20 @@
 		},
 		data() {
 			return {
+				tabIdx: 0,
 				tabList: [
 					{ title: '歌曲列表' },
-					{ title: '评论', badge: { value: 5 } },
+					{ title: '评论', badge: { value: 0 } },
 					{ title: '收藏者' }
 				],
 				
 				playlist: {},
-				musicList: []
+				musicList: [],
+				
+				playlistDynamic: {},
+				
+				commentList: [],
+				subscriberList: []
 			}
 		},
 		watch: {
@@ -96,6 +148,9 @@
 			...mapActions({
 				addToList: 'music/addToList'
 			}),
+			handleTabChange(data) {
+				this.tabIdx = data.index
+			},
 			handleMusic(data) {
 				this.addToList(data)
 			},
@@ -107,8 +162,41 @@
 					this.musicList = res.playlist.tracks
 				})
 			},
+			getAlbumDetailDynamic() {
+				fetchPlaylistDetailDynamic({
+					id: this.id
+				}).then(res => {
+					this.playlistDynamic = res
+					this.$set(this.tabList)
+					this.tabList = this.tabList.map(item => {
+						if (item.title == '评论') {
+							item.badge = {
+								value: res.commentCount > 100 ? '99+' : res.commentCount
+							}
+						}
+						return item
+					})
+				})
+			},
+			getCommentPlaylist() {
+				fetchCommentPlaylist({
+					id: this.id
+				}).then(res => {
+					this.commentList = res.comments
+				})
+			},
+			getPlaylistSubscribers() {
+				fetchPlaylistSubscribers({
+					id: this.id
+				}).then(res => {
+					this.subscriberList = res.subscribers
+				})
+			},
 			initData() {
 				this.getAlbumDetail()
+				this.getAlbumDetailDynamic()
+				this.getCommentPlaylist()
+				this.getPlaylistSubscribers()
 			}
 		},
 		mounted() {
@@ -221,6 +309,7 @@
 				}
 				
 				.text-wrap {
+					max-width: 1000rpx;
 					height: 44rpx;
 					overflow: hidden;
 					text-overflow: ellipsis;
@@ -269,6 +358,121 @@
 							width: 5%;
 							font-size: 24rpx;
 							color: #aaa;
+						}
+					}
+				}
+				
+				.comment-group {
+					.comment-media {
+						position: relative;
+						display: flex;
+						justify-content: flex-start;
+						align-items: center;
+						padding: 10rpx 10rpx 10rpx 0;
+						
+						.media-img-left {
+							width: 110rpx;
+							font-size: 0;
+							
+							.img-media {
+								width: 110rpx;
+								height: 110rpx;
+								border-radius: 6rpx;
+								overflow: hidden;
+							}
+						}
+						
+						.media-block {
+							flex: 1;
+							margin-left: 20rpx;
+							height: 110rpx;
+							border-bottom: 1px solid #eee;
+							
+							.media-title {
+								font-size: 26rpx;
+								line-height: 36rpx;
+								height: 72rpx;
+								overflow: hidden;
+								text-overflow: ellipsis;
+								display: -webkit-box;
+								-webkit-box-orient: vertical;
+								-webkit-line-clamp: 2;
+								lines: 2;
+							}
+							
+							.media-text {
+								font-size: 26rpx;
+								color: #999;
+							}
+						}
+							
+						.media-action {
+							position: absolute;
+							bottom: 20rpx;
+							right: 20rpx;
+							display: flex;
+							justify-content: flex-start;
+							align-items: center;
+							
+							.action-wrap {
+								margin-left: 20rpx;
+								font-size: 28rpx;
+								color: #ccc;
+								
+								&:first-child {
+									margin-left: 0;
+								}
+								
+								.icon-action {
+									display: inline-block;
+								}
+							}
+						}
+					}
+				}
+				
+				.subscriber-group {
+					
+					::v-deep .u-row {
+						flex-wrap: wrap;
+						
+						.u-col {
+							margin-bottom: 40rpx;
+						}
+						
+						.subscriber-wrap {
+							display: flex;
+							justify-content: flex-start;
+							align-items: center;
+							
+							.subscriber-img-left {
+								width: 200rpx;
+								
+								.img-subscriber {
+									width: 180rpx;
+									height: 180rpx;
+									border-radius: 50%;
+									overflow: hidden;
+								}
+							}
+							
+							.subscriber-block {
+								.subscriber-title {
+									font-size: 30rpx;
+									
+									.icon-gender {
+										display: inline-block;
+										zoom: 1;
+										vertical-align: middle;
+										margin-left: 10rpx;
+									}
+								}
+								
+								.subscriber-text {
+									font-size: 24rpx;
+									color: #999;
+								}
+							}
 						}
 					}
 				}

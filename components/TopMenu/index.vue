@@ -27,12 +27,13 @@
 					</view>
 				</view>
 				<view class="top-menu-form">
+					<input v-model="keyword" class="search-input" placeholder="搜索" />
 				</view>
 				<view class="top-menu-action">
-					<uni-icons class="icon-action" type="gear" size="24" color="#999"></uni-icons>
-					<uni-icons class="icon-action" type="email" size="24" color="#999"></uni-icons>
-					<uni-icons class="icon-action" type="color" size="24" color="#999"></uni-icons>
-					<uni-icons class="icon-action" type="gift" size="24" color="#999"></uni-icons>
+					<uni-icons class="icon-action" type="gear" size="20" color="#999"></uni-icons>
+					<uni-icons class="icon-action" type="email" size="20" color="#999"></uni-icons>
+					<uni-icons class="icon-action" type="color" size="20" color="#999"></uni-icons>
+					<uni-icons class="icon-action" type="gift" size="20" color="#999"></uni-icons>
 				</view>
 			</view>
 		</view>
@@ -111,8 +112,8 @@
 					align-items: center;
 					
 					.nav-item {
-						padding: 0 30rpx;
-						font-size: 28rpx;
+						padding: 0 18rpx;
+						font-size: 26rpx;
 						color: $uni-text-color-grey;
 						
 						&.active {
@@ -122,25 +123,29 @@
 				}
 		
 				.top-menu-form {
-					width: 300rpx;
+					width: 200rpx;
+					padding-top: 25rpx;
 					
-					:deep(.uni-searchbar) {
-						.uni-searchbar__box {
-							height: 48rpx;
-							line-height: 48rpx;
-							font-size: 24rpx;
-						}
+					.search-input {
+						padding: 0 20rpx;
+						height: 48rpx;
+						line-height: 48rpx;
+						font-size: 24rpx;
+						text-align: center;
+						border: 2rpx solid #eee;
+						border-radius: 48rpx;
+						background-color: #fff;
 					}
 				}
 				
 				.top-menu-action {
-					width: 320rpx;
+					width: 260rpx;
 					display: flex;
 					justify-content: flex-start;
 					align-items: center;
 					
 					.icon-action {
-						margin-right: 20rpx;
+						margin-left: 20rpx;
 						color: $uni-text-color-grey;
 					}
 				}

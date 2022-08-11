@@ -42,10 +42,10 @@
 						来源：<text class="info-text">今天</text>
 					</text>
 				</view>
-				<scroll-view class="wrap-lyric" scroll-y>
+				<scroll-view class="wrap-lyric" scroll-y scroll-with-animation :scroll-top="lyricTop">
 					<view class="lyric-list">
-						<view class="lyric-item" v-for="(item, index) in lyricList" :key="index">
-							{{ item.lyric }}
+						<view class="lyric-item" :id="'lyric-' + index" :class="{ active: lyricId == 'lyric-' + index }" v-for="(item, index) in lyricList" :key="index">
+							<text class="lyric-text">{{ item.lyric }}</text>
 						</view>
 					</view>
 				</scroll-view>
@@ -118,7 +118,7 @@
 					</view>
 					<view class="recommend-body">
 						<view class="recommend-list">
-							<view class="recommend-item" v-for="(item, index) in similarList" :key="index">
+							<view class="recommend-item" v-for="(item, index) in similarList" :key="index" @click="handleMusic(item)">
 								<view class="recommend-img-left">
 									<image v-if="item.album" class="img-recommend" mode="aspectFill" :src="item.album.picUrl"></image>
 								</view>
@@ -158,6 +158,7 @@
 		data() {
 			return {
 				id: '',
+				lyricIdx: 0,
 				
 				commentTotal: 0,
 				lyricList: [],
@@ -167,12 +168,53 @@
 			}
 		},
 		computed: {
-			...mapState('music', ['status', 'currMusic'])
+			...mapState('music', ['status', 'currMusic', 'currentTime']),
+			lyricId() {
+				return 'lyric-' + this.lyricIdx
+			},
+			lyricTop() {
+				let res = 0, maxRes = 0
+				if (this.lyricIdx < 4) {
+					return res
+				}
+				this.lyricList.forEach((item, index) => {
+					if (index < this.lyricIdx - 4) {
+						res += item.height || 0
+					}
+					if (index <= this.lyricList.length - 11) {
+						maxRes += item.height || 0
+					}
+				})
+				if (res > maxRes) {
+					return maxRes
+				}
+				return res
+			}
+		},
+		watch: {
+			currentTime(val) {
+				let time, nextLyricTime
+				this.lyricList.forEach((item, index) => {
+					time = item.time.match(/\d{2}:\d{2}/)[0]
+					if (this.currentTime >= time) {
+						nextLyricTime = this.lyricList[index + 1]
+						if (nextLyricTime) {
+							nextLyricTime = nextLyricTime.time.match(/\d{2}:\d{2}/)[0]
+						}
+						if (this.currentTime < nextLyricTime) {
+							this.lyricIdx = index
+						}
+					}
+				})
+			}
 		},
 		methods: {
 			...mapActions({
 				addToList: 'music/addToList'
 			}),
+			handleMusic(data) {
+				this.addToList(data)
+			},
 			handleClose() {
 				uni.navigateTo({
 					url: '/pages/index/index'
@@ -227,6 +269,18 @@
 						}
 					})
 					this.lyricList = lyricList
+					this.getLyricHeight()
+				})
+			},
+			getLyricHeight() {
+				this.$nextTick(() => {
+					var query = uni.createSelectorQuery().in(this);
+					query.selectAll('.lyric-item').boundingClientRect(data => {
+						this.lyricList = this.lyricList.map((item, index) => {
+							item.height = data[index].height
+							return item
+						})
+					}).exec()
 				})
 			},
 			getSongDetail() {
@@ -294,9 +348,9 @@
 					
 					.img-bar-circle {
 						position: absolute;
-						top: -195rpx;
+						top: -165rpx;
 						left: 50%;
-						margin-left: -118rpx;
+						margin-left: -33rpx;
 						width: 60rpx;
 						height: 60rpx;
 						z-index: 19;
@@ -304,13 +358,13 @@
 					
 					.img-bar {
 						position: absolute;
-						top: -180rpx;
+						top: -150rpx;
 						left: 50%;
-						margin-left: -100rpx;
+						margin-left: -20rpx;
 						width: 200rpx;
 						height: 292rpx;
 						z-index: 10;
-						transform-origin: 0 30rpx;
+						transform-origin: 0 33rpx;
 						transform: rotate(-30deg);
 						transition: all .3s ease;
 						
@@ -429,12 +483,24 @@
 				.wrap-lyric {
 					margin-top: 60rpx;
 					width: 80%;
-					height: 1000rpx;
+					height: 800rpx;
 					
 					.lyric-item {
-						font-size: 26rpx;
-						line-height: 1.56;
-						text-align: center;
+						padding: 20rpx 0;
+						font-size: 0;
+						text-align: left;
+						
+						.lyric-text {
+							font-size: 28rpx;
+							line-height: 40rpx;
+							color: #999;
+						}
+						
+						&.active {
+							.lyric-text {
+								color: #444;
+							}
+						}
 					}
 				}
 			}
@@ -509,6 +575,14 @@
 								
 								.media-title {
 									font-size: 26rpx;
+									line-height: 36rpx;
+									height: 72rpx;
+									overflow: hidden;
+									text-overflow: ellipsis;
+									display: -webkit-box;
+									-webkit-box-orient: vertical;
+									-webkit-line-clamp: 2;
+									lines: 2;
 								}
 								
 								.media-text {

@@ -1,6 +1,6 @@
 <template>
 	<view class="music-bar-view">
-		<u-slider v-show="currMusic.id" v-model="sliderValue" :min="0" :max="sliderMax" activeColor="#cb3631" :blockSize="10" blockColor="#cb3631" inactiveColor="#c0c4cc" @change="sliderChange"></u-slider>
+		<u-slider v-show="currMusic.id" v-model="musicSliderValue" :min="0" :max="sliderMax" activeColor="#cb3631" :blockSize="10" blockColor="#cb3631" inactiveColor="#c0c4cc" @change="sliderChange"></u-slider>
 		<view class="music-bar-content">
 			<view class="music-info" @click="handleShow">
 				<view v-show="currMusic.id" class="info-box">
@@ -68,7 +68,9 @@
 		},
 		data() {
 			return {
-				isShowPopups: false
+				isShowPopups: false,
+				
+				musicSliderValue: this.sliderValue
 			}
 		},
 		watch: {
@@ -76,6 +78,12 @@
 				this.addToList(val)
 				this.resetMusic()
 				this.playOrPause()
+			},
+			musicSliderValue(val) {
+				this.sliderChange(val)
+			},
+			sliderValue(val) {
+				this.musicSliderValue = val
 			}
 		},
 		computed: {

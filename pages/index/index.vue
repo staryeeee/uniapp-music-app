@@ -124,7 +124,7 @@
 				isShowTrans: false,
 				page: 'album',
 				
-				albumId: '5172410111'
+				albumId: '2127074784'
 			}
 		},
 		computed: {

@@ -139,7 +139,7 @@ export default {
     actions: {
 		renderMusic({ commit }) {
 			myAudio.onCanplay(() => {
-				console.log('可以播放状态');
+				// console.log('可以播放状态');
 				commit('SET_SLIDERMAX', myAudio.duration)
 			})
 			myAudio.onPlay(() => {
@@ -163,7 +163,7 @@ export default {
 				console.log('播放自然停止')
 			})
 			myAudio.onWaiting((state) => {
-				console.log('正在等待数据加载');
+				// console.log('正在等待数据加载')
 			})
 		},
 		resetMusic({ commit }) {

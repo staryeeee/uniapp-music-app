@@ -1,5 +1,5 @@
 <template>
-	<view class="left-menu-view">
+	<scroll-view scroll-y class="left-menu-view">
 		<view class="left-menu-content">
 			<view v-if="!userInfo.userId" class="nav-user" @click="handleUser">
 				<view class="user-avatar">
@@ -66,7 +66,7 @@
 				</view>
 			</view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
@@ -113,7 +113,8 @@
 
 <style lang="scss">
 	.left-menu-view {
-		min-height: calc(100vh - 50px);
+		width: 400rpx;
+		height: calc(100vh - 100rpx - 120rpx);
 		background-color: #eaeaea;
 		
 		.left-menu-content {
