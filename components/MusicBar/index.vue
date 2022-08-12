@@ -5,14 +5,14 @@
 			<view class="music-info" @click="handleShow">
 				<view v-show="currMusic.id" class="info-box">
 					<view class="info-img-left">
-						<image v-if="currMusic.al" class="img-info" mode="aspectFill" :src="currMusic.al.picUrl"></image>
+						<image v-if="currMusic.album" class="img-info" mode="aspectFill" :src="currMusic.album.picUrl"></image>
 					</view>
 					<view class="info-block">
 						<view class="info-title">
-							<text class="info-name">{{ currMusic.name }}</text> - {{ currMusic.ar ? currMusic.ar[0].name : '' }}
+							<text class="info-name">{{ currMusic.name }}</text> - {{ currMusic.artists ? currMusic.artists[0].name : '' }}
 						</view>
 						<view class="info-text">
-							{{ currentTime }} / {{ currMusic.dt | formatDate('mm:ss') }}
+							{{ currentTime }} / {{ currMusic.duration | formatDate('mm:ss') }}
 						</view>
 					</view>
 				</view>
@@ -20,7 +20,7 @@
 			<view class="music-player">
 				<u-icon class="icon-player" name="heart" size="20" color="#555"></u-icon>
 				<u-icon class="icon-player" name="play-left-fill" size="20" color="#cb3631" @click="playPrev"></u-icon>
-				<u-icon class="icon-player" :name="status == 'play' ? 'pause-circle-fill' : 'play-circle-fill'" size="50" color="#cb3631" @click="playOrPause"></u-icon>
+				<u-icon class="icon-player" :name="musicStatus == 'play' ? 'pause-circle-fill' : 'play-circle-fill'" size="50" color="#cb3631" @click="playOrPause"></u-icon>
 				<u-icon class="icon-player" name="play-right-fill" size="20" color="#cb3631" @click="playNext"></u-icon>
 				<u-icon class="icon-player" name="share-square" size="20" color="#555"></u-icon>
 			</view>
@@ -36,11 +36,11 @@
 			<view class="popup-music">
 				<view class="music-head">
 					<view class="head-title">当前播放</view>
-					<view class="head-text">共 {{ list.length }} 首</view>
+					<view class="head-text">共 {{ musicList.length }} 首</view>
 				</view>
 				<scroll-view class="music-body" scroll-y>
 					<view class="music-list">
-						<view class="music-item" v-for="(item, index) in list" :key="index" @click.stop="handleMusic(item)">
+						<view class="music-item" v-for="(item, index) in musicList" :key="index" @click.stop="handleMusic(item)">
 							<view class="music-name">{{ item.name }}</view>
 							<view class="music-author">{{ item.ar ? item.ar[0].name : '' }}</view>
 							<view class="music-time">{{ item.dt | formatDate('mm:ss') }}</view>
@@ -75,19 +75,15 @@
 		},
 		watch: {
 			currMusic(val) {
-				this.addToList(val)
 				this.resetMusic()
 				this.playOrPause()
-			},
-			musicSliderValue(val) {
-				this.sliderChange(val)
 			},
 			sliderValue(val) {
 				this.musicSliderValue = val
 			}
 		},
 		computed: {
-			...mapState('music', ['status', 'currentTime', 'sliderMax', 'sliderValue', 'currIdx', 'currMusic', 'list'])
+			...mapState('music', ['musicStatus', 'currentTime', 'sliderMax', 'sliderValue', 'currIdx', 'currMusic', 'musicList'])
 		},
 		methods: {
 			...mapActions({
@@ -101,7 +97,7 @@
 				playOrPause: 'music/playOrPause'
 			}),
 			handleMusic(data) {
-				this.addToList(data)
+				this.addToList([data])
 			},
 			handleShow() {
 				this.$emit('show-music')

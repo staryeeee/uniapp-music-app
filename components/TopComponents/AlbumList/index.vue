@@ -26,7 +26,7 @@
 		</div>
 		<view class="song-list-body">
 			<u-row>
-				<u-col span="3" v-for="(item, index) in musicList" :key="index">
+				<u-col span="3" v-for="(item, index) in musicList" :key="index" @click="handleAlbum(item)">
 					<view class="col-wrap">
 						<view class="col-img-top">
 							<image class="img-col" mode="aspectFill" :src="item.coverImgUrl"></image>
@@ -81,6 +81,9 @@
 			}
 		},
 		methods: {
+			handleAlbum(data) {
+				this.$emit('album', data.id)
+			},
 			handleNavChange(data) {
 				this.navList = this.navList.map((item, index) => {
 					item.active = false

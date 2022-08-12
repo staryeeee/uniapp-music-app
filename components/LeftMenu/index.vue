@@ -1,7 +1,7 @@
 <template>
 	<scroll-view scroll-y class="left-menu-view">
 		<view class="left-menu-content">
-			<view v-if="!userInfo.userId" class="nav-user" @click="handleUser">
+			<view v-if="!userInfo.userId" class="nav-user" @click="handleAuth">
 				<view class="user-avatar">
 					<uni-icons class="icon-user" type="person" size="20"></uni-icons>
 				</view>
@@ -97,13 +97,14 @@
 			...mapState('auth', ['cookie', 'token', 'userInfo'])
 		},
 		methods: {
-			handleUser() {
-				console.log(1)
-				if (true) {
-					this.$emit('auth', 'signin')
-				}
+			...mapActions({
+				setPage: 'app/setPage'
+			}),
+			handleAuth() {
+				this.$emit('auth', 'signin')
 			},
 			handleMenuTo(data) {
+				this.setPage(data)
 				this.navName = data
 				this.$emit('change', data)
 			}

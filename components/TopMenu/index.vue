@@ -2,15 +2,15 @@
 	<view class="top-menu-view">
 		<view class="top-menu-content">
 			<view class="top-menu-left">
-				<uni-icons class="icon-arrow" type="back" size="20" color="#444"></uni-icons>
-				<uni-icons class="icon-arrow" type="forward" size="20" color="#444"></uni-icons>
+				<uni-icons class="icon-arrow" type="back" size="20" :color="prevPage ? '#444' : '#ccc'" @click="handlePrevPage"></uni-icons>
+				<uni-icons class="icon-arrow" type="forward" size="20" :color="nextPage ? '#444' : '#ccc'" @click="handleNextPage"></uni-icons>
 			</view>
 			<view class="top-menu-right">
 				<view class="top-menu-nav">
 					<view class="nav-item" :class="{ active: navName == 'home' }" @click="handleMenuTo('home')">
 						个性推荐
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'music-list' }" @click="handleMenuTo('music-list')">
+					<view class="nav-item" :class="{ active: navName == 'album-list' }" @click="handleMenuTo('album-list')">
 						歌单
 					</view>
 					<view class="nav-item" :class="{ active: navName == 'radio-list' }" @click="handleMenuTo('radio-list')">
@@ -41,6 +41,11 @@
 </template>
 
 <script>
+	import {
+		mapState,
+		mapActions
+	} from 'vuex'
+	
 	export default {
 		name: 'top-menu',
 		props: {
@@ -55,13 +60,38 @@
 				navName: this.value
 			}
 		},
+		computed: {
+			...mapState('app', ['pageIndex', 'pageList']),
+			prevPage() {
+				return this.pageList.length > 0 && this.pageIndex > 0
+			},
+			nextPage() {
+				return this.pageList.length > 0 && this.pageIndex < this.pageList.length - 1
+			}
+		},
 		watch: {
 			value(val) {
 				this.navName = this.value
 			}
 		},
 		methods: {
+			...mapActions({
+				setPage: 'app/setPage',
+				setPrevPage: 'app/setPrevPage',
+				setNextPage: 'app/setNextPage'
+			}),
+			handlePrevPage() {
+				this.setPrevPage()
+				this.navName = this.pageList[this.pageIndex]
+				this.$emit('change', this.pageList[this.pageIndex])
+			},
+			handleNextPage() {
+				this.setNextPage()
+				this.navName = this.pageList[this.pageIndex]
+				this.$emit('change', this.pageList[this.pageIndex])
+			},
 			handleMenuTo(data) {
+				this.setPage(data)
 				this.navName = data
 				this.$emit('change', data)
 			}

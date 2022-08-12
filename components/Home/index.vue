@@ -7,7 +7,7 @@
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="2" v-for="(item, index) in musicList" :key="index">
+					<u-col span="2" v-for="(item, index) in musicList" :key="index" @click="handleAlbum(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
 								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
@@ -26,7 +26,7 @@
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="3" v-for="(item, index) in dujiaList" :key="index">
+					<u-col span="3" v-for="(item, index) in dujiaList" :key="index" @click="handleAlbum(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
 								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
@@ -45,7 +45,7 @@
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="6" v-for="(item, index) in zuixinList" :key="index">
+					<u-col span="6" v-for="(item, index) in zuixinList" :key="index" @click="handleMusic(item.song)">
 						<view class="col-wrap">
 							<view class="col-img-top">
 								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -68,7 +68,7 @@
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="3" v-for="(item, index) in mvList" :key="index">
+					<u-col span="3" v-for="(item, index) in mvList" :key="index" @click="handleMV(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
 								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -88,7 +88,7 @@
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="6" v-for="(item, index) in diantaiList" :key="index">
+					<u-col span="6" v-for="(item, index) in diantaiList" :key="index" @click="handleRadio(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
 								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
@@ -141,9 +141,20 @@
 			this.getDiantaiList()
 		},
 		methods: {
+			handleAlbum(data) {
+				this.$emit('album', data.id)
+			},
+			handleMusic(data) {
+				this.$emit('music', data)
+			},
+			handleMV(data) {
+				this.$emit('mv', data.id)
+			},
+			handleRadio(data) {
+				this.$emit('radio', data.id)
+			},
 			getHomepageBlockPage() {
 				fetchHomepageDragonBall().then(res => {
-					console.log(res)
 				})
 			},
 			getBanner() {

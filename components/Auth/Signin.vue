@@ -42,8 +42,8 @@
 			return {
 				show: this.value,
 				signinForm: {
-					phone: '18516602969',
-					password: 'junxing1989'
+					phone: '',
+					password: ''
 				}
 			}
 		},
@@ -69,6 +69,7 @@
 					this.setCookie(res.cookie)
 					this.setToken(res.token)
 					this.setUserInfo(res.profile)
+					this.show = false
 				})
 			},
 			handleOpen() {

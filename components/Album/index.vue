@@ -15,7 +15,7 @@
 					创建
 				</view>
 				<view class="head-action">
-					<u-button class="btn-action" type="primary" shape="circle" icon="map" text="播放全部"></u-button>
+					<u-button class="btn-action" type="primary" shape="circle" icon="map" text="播放全部" @click="handleMusics(musicList)"></u-button>
 					<u-button class="btn-action" type="default" plain shape="circle" icon="plus" :text="'收藏(' + (playlistDynamic.bookedCount || 0) + ')'"></u-button>
 					<u-button class="btn-action" type="default" plain shape="circle" icon="share" :text="'分享(' + (playlistDynamic.shareCount || 0) + ')'"></u-button>
 					<u-button class="btn-action" type="default" plain shape="circle" icon="download" text="下载全部"></u-button>
@@ -46,12 +46,12 @@
 						<view class="music-album">专辑</view>
 						<view class="music-time">时长</view>
 					</view>
-					<view class="music-item" v-for="(item, index) in musicList" :key="index" @click="handleMusic(item)">
+					<view class="music-item" v-for="(item, index) in musicList" :key="index" @click="handleMusics([item])">
 						<view class="music-num">{{ index < 9 ? '0' + (index + 1) : index + 1 }}</view>
 						<view class="music-title">{{ item.name }}</view>
-						<view class="music-author">{{ item.ar && item.ar[0] ? item.ar[0].name : '' }}</view>
-						<view class="music-album">{{ item.al ? item.al.name : '' }}</view>
-						<view class="music-time">{{ item.dt | formatDate('mm:ss') }}</view>
+						<view class="music-author">{{ item.artists && item.artists[0] ? item.ar[0].name : '' }}</view>
+						<view class="music-album">{{ item.album ? item.album.name : '' }}</view>
+						<view class="music-time">{{ item.duration | formatDate('mm:ss') }}</view>
 					</view>
 				</view>
 				<view v-if="tabIdx == 1" class="comment-group">
@@ -151,7 +151,7 @@
 			handleTabChange(data) {
 				this.tabIdx = data.index
 			},
-			handleMusic(data) {
+			handleMusics(data) {
 				this.addToList(data)
 			},
 			getAlbumDetail() {
@@ -159,7 +159,12 @@
 					id: this.id
 				}).then(res => {
 					this.playlist = res.playlist
-					this.musicList = res.playlist.tracks
+					this.musicList = res.playlist.tracks.map(item => {
+						item.album = item.al
+						item.artists = item.ar
+						item.duration = item.dt
+						return item
+					})
 				})
 			},
 			getAlbumDetailDynamic() {

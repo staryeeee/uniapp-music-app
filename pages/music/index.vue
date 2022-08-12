@@ -7,9 +7,9 @@
 			<view class="wrap-left">
 				<view class="music-player">
 					<image class="img-bar-circle" src="@/static/img/music/play-bar-circle.png" mode="aspectFill"></image>
-					<image class="img-bar" :class="{ play: status == 'play' }" src="@/static/img/music/play-bar.png" mode="aspectFill"></image>
-					<image v-if="currMusic.al" :class="{ play: status == 'play', paused: status == 'pause' }" class="img-info" mode="aspectFill" :src="currMusic.al.picUrl"></image>
-					<image class="img-cover" :class="{ play: status == 'play', paused: status == 'pause' }" src="@/static/img/music/singlecover.png" mode="aspectFill"></image>
+					<image class="img-bar" :class="{ play: musicStatus == 'play' }" src="@/static/img/music/play-bar.png" mode="aspectFill"></image>
+					<image v-if="currMusic.al" :class="{ play: musicStatus == 'play', paused: musicStatus == 'pause' }" class="img-info" mode="aspectFill" :src="currMusic.album.picUrl"></image>
+					<image class="img-cover" :class="{ play: musicStatus == 'play', paused: musicStatus == 'pause' }" src="@/static/img/music/singlecover.png" mode="aspectFill"></image>
 				</view>
 				<view class="music-action">
 					<view class="action-wrap">
@@ -33,10 +33,10 @@
 				</view>
 				<view class="wrap-desc">
 					<text class="desc-info">
-						专辑：<text class="info-text">{{ currMusic.ar ? currMusic.ar[0].name : '' }}</text>
+						专辑：<text class="info-text">{{ currMusic.artists ? currMusic.artists[0].name : '' }}</text>
 					</text>
 					<text class="desc-info">
-						歌手：<text class="info-text">{{ currMusic.ar && currMusic.ar[0] ? currMusic.ar[0].name : '' }}</text>
+						歌手：<text class="info-text">{{ currMusic.artists && currMusic.artists[0] ? currMusic.artists[0].name : '' }}</text>
 					</text>
 					<text class="desc-info">
 						来源：<text class="info-text">今天</text>
@@ -100,7 +100,7 @@
 					</view>
 					<view class="recommend-body">
 						<view class="recommend-list">
-							<view class="recommend-item" v-for="(item, index) in gedanList" :key="index">
+							<view class="recommend-item" v-for="(item, index) in gedanList" :key="index" @click="handleAlbum(item)">
 								<view class="recommend-img-left">
 									<image class="img-recommend" mode="aspectFill" :src="item.coverImgUrl"></image>
 								</view>
@@ -168,7 +168,7 @@
 			}
 		},
 		computed: {
-			...mapState('music', ['status', 'currMusic', 'currentTime']),
+			...mapState('music', ['musicStatus', 'currMusic', 'currentTime']),
 			lyricId() {
 				return 'lyric-' + this.lyricIdx
 			},
@@ -192,6 +192,10 @@
 			}
 		},
 		watch: {
+			currMusic(val) {
+				this.id = val.id
+				this.initData()
+			},
 			currentTime(val) {
 				let time, nextLyricTime
 				this.lyricList.forEach((item, index) => {
@@ -213,7 +217,12 @@
 				addToList: 'music/addToList'
 			}),
 			handleMusic(data) {
-				this.addToList(data)
+				this.addToList([data])
+			},
+			handleAlbum(data) {
+				uni.navigateTo({
+					url: '/pages/index/index?page=album-list&id=' + data.id
+				})
 			},
 			handleClose() {
 				uni.navigateTo({
@@ -288,18 +297,27 @@
 					ids: this.id
 				}).then(res => {
 					if (res.songs && res.songs.length > 0) {
-						this.addToList(res.songs[0])
+						let songs = res.songs.map(item => {
+							item.album = item.al
+							item.artists = item.ar
+							item.duration = item.dt
+							return item
+						})
+						this.addToList(songs)
 					}
 				})
+			},
+			initData() {
+				this.getSongDetail()
+				this.getLyric()
+				this.getCommentList()
+				this.getGedanList()
+				this.getSimilarList()
 			}
 		},
 		onLoad(options) {
 			this.id = this.currMusic.id || options.id
-			this.getSongDetail()
-			this.getLyric()
-			this.getCommentList()
-			this.getGedanList()
-			this.getSimilarList()
+			this.initData()
 		}
 	}
 </script>

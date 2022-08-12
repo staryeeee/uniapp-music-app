@@ -11,6 +11,15 @@
 				"navigationBarTitleText": ""
 			}
 		}
+        ,{
+            "path" : "pages/test/music",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"rpxCalcMaxDeviceWidth": 60, // rpx 计算所支持的最大设备宽度，单位 px，默认值为 960

@@ -10,7 +10,7 @@
 		</view>
 		<view class="newest-list-body">
 			<u-row v-if="tabCurrent == 0" class="music-list">
-				<u-col span="12" v-for="(item, index) in musicList" :key="index">
+				<u-col span="12" v-for="(item, index) in musicList" :key="index" @click="handleMusic(item)">
 					<view class="col-wrap">
 						<view class="col-num">{{ index < 9 ? '0' + (index + 1) : index + 1 }}</view>
 						<view class="col-img-left">
@@ -29,7 +29,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="3" v-for="(subItem, subIndex) in item.children" :key="subIndex">
+						<u-col span="3" v-for="(subItem, subIndex) in item.children" :key="subIndex" @click="handleAlbum(subItem)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="subItem.picUrl"></image>
@@ -75,6 +75,12 @@
 			}
 		},
 		methods: {
+			handleAlbum(data) {
+				this.$emit('album', data.id)
+			},
+			handleMusic(data) {
+				this.$emit('music', data)
+			},
 			handleTabChange(index) {
 				this.tabCurrent = index
 				if (this.tabCurrent == 0) {

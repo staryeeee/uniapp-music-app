@@ -13,10 +13,10 @@
 			</view>
 			<view class="index-content">
 				<u-transition mode="fade" :show="page == 'home'">
-					<home></home>
+					<home @album="handleAlbum" @music="handleMusic"></home>
 				</u-transition>
-				<u-transition mode="fade" :show="page == 'music-list'">
-					<music-list v-if="page == 'music-list'"></music-list>
+				<u-transition mode="fade" :show="page == 'album-list'">
+					<album-list @album="handleAlbum"></album-list>
 				</u-transition>
 				<u-transition mode="fade" :show="page == 'radio-list'">
 					<radio-list></radio-list>
@@ -28,7 +28,7 @@
 					<singer-list></singer-list>
 				</u-transition>
 				<u-transition mode="fade" :show="page == 'newest-list'">
-					<newest-list></newest-list>
+					<newest-list @album="handleAlbum" @music="handleMusic"></newest-list>
 				</u-transition>
 				
 				<u-transition mode="fade" :show="page == 'fm-list'">
@@ -56,7 +56,7 @@
 					<like-list></like-list>
 				</u-transition>
 				<u-transition mode="fade" :show="page == 'album'">
-					<album :id="albumId"></album>
+					<album :id="id"></album>
 				</u-transition>
 			</view>
 		</view>
@@ -73,7 +73,7 @@
 	import Signin from '@/components/Auth/Signin'
 	import MusicBar from '@/components/MusicBar'
 	import Home from '@/components/Home'
-	import MusicList from '@/components/TopComponents/MusicList'
+	import AlbumList from '@/components/TopComponents/AlbumList'
 	import RadioList from '@/components/TopComponents/RadioList'
 	import HotList from '@/components/TopComponents/HotList'
 	import SingerList from '@/components/TopComponents/SingerList'
@@ -101,7 +101,7 @@
 			
 			Home,
 			
-			MusicList,
+			AlbumList,
 			RadioList,
 			HotList,
 			SingerList,
@@ -122,15 +122,24 @@
 			return {
 				isSignin: false,
 				isShowTrans: false,
-				page: 'album',
-				
-				albumId: '2127074784'
+				page: 'home',
+				id: ''
 			}
 		},
 		computed: {
 			...mapState('music', ['currMusic'])
 		},
 		methods: {
+			...mapActions({
+				addToList: 'music/addToList'
+			}),
+			handleMusic(data) {
+				this.addToList([data])
+			},
+			handleAlbum(data) {
+				this.id = data
+				this.page = 'album'
+			},
 			handleShowMusic() {
 				uni.navigateTo({
 					url: '/pages/music/index?id=' + this.currMusic.id,
@@ -153,7 +162,14 @@
 					scrollTop: 0,
 					duration: 0
 				});
-			}
+			},
+			initData() {
+			},
+		},
+		onLoad(options) {
+			this.page = options.page || 'home'
+			this.id = options.id || ''
+			this.initData()
 		}
 	}
 </script>
