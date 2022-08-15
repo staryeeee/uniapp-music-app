@@ -12,7 +12,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="6" v-for="(item, index) in fufeijingpinList" :key="index">
+						<u-col span="6" v-for="(item, index) in fufeijingpinList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -34,7 +34,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in tuijianList" :key="index">
+						<u-col span="2" v-for="(item, index) in tuijianList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -53,7 +53,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in youshengshuList" :key="index">
+						<u-col span="2" v-for="(item, index) in youshengshuList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -72,7 +72,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in chuangzuofanchangList" :key="index">
+						<u-col span="2" v-for="(item, index) in chuangzuofanchangList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -91,7 +91,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in yinyuetuijianList" :key="index">
+						<u-col span="2" v-for="(item, index) in yinyuetuijianList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -110,7 +110,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in qingganList" :key="index">
+						<u-col span="2" v-for="(item, index) in qingganList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -129,7 +129,7 @@
 				</view>
 				<view class="group-body">
 					<u-row>
-						<u-col span="2" v-for="(item, index) in tuokouxiuList" :key="index">
+						<u-col span="2" v-for="(item, index) in tuokouxiuList" :key="index" @click="handleRadio(item)">
 							<view class="col-wrap">
 								<view class="col-img-top">
 									<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
@@ -195,6 +195,11 @@
 			}
 		},
 		methods: {
+			handleRadio(data) {
+				uni.navigateTo({
+					url: '/pages/radio/index?id=' + data.id
+				})
+			},
 			getTuokouxiu() {
 				fetchDjRadioHot({
 					cateId: 8,

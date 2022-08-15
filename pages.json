@@ -3,12 +3,164 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
 			}
 		}, {
 			"path": "pages/music/index",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "slide-in-bottom",
+					"animationDuration": 200
+				}
+			}
+		}, {
+			"path": "pages/topmenu/album-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/topmenu/hot-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/topmenu/newest-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/topmenu/radio-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/topmenu/singer-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/download-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/favorite-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/fm-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/follow-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/itunes-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/like-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/recent-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/leftmenu/video-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/album/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/mv/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
+			}
+		}, {
+			"path": "pages/radio/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"animationType": "fade-in",
+					"animationDuration": 300
+				}
 			}
 		}
         ,{

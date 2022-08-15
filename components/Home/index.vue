@@ -10,7 +10,7 @@
 					<u-col span="2" v-for="(item, index) in musicList" :key="index" @click="handleAlbum(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
+								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
 								<text class="col-text text-ellipsis">{{ item.name }}</text>
@@ -26,10 +26,10 @@
 			</view>
 			<view class="group-body">
 				<u-row>
-					<u-col span="3" v-for="(item, index) in dujiaList" :key="index" @click="handleAlbum(item)">
+					<u-col span="3" v-for="(item, index) in dujiaList" :key="index" @click="handleMV(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
+								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
 								<text class="col-text text-ellipsis">{{ item.name }}</text>
@@ -91,7 +91,7 @@
 					<u-col span="6" v-for="(item, index) in diantaiList" :key="index" @click="handleRadio(item)">
 						<view class="col-wrap">
 							<view class="col-img-top">
-								<image class="img-col" mode="widthFix" :src="item.picUrl"></image>
+								<image class="img-col" mode="aspectFill" :src="item.picUrl"></image>
 							</view>
 							<view class="col-block">
 								<text class="col-title text-wrap">{{ item.name }}</text>
@@ -106,6 +106,9 @@
 </template>
 
 <script>
+	import {
+		mapActions
+	} from 'vuex'
 	import {
 		fetchHomepageBlockPage,
 		fetchHomepageDragonBall,
@@ -141,11 +144,14 @@
 			this.getDiantaiList()
 		},
 		methods: {
+			...mapActions({
+				addToList: 'music/addToList'
+			}),
 			handleAlbum(data) {
 				this.$emit('album', data.id)
 			},
 			handleMusic(data) {
-				this.$emit('music', data)
+				this.addToList([data])
 			},
 			handleMV(data) {
 				this.$emit('mv', data.id)
@@ -248,6 +254,7 @@
 						.col-img-top {
 							.img-col {
 								width: 100%;
+								height: 180rpx;
 								border-radius: 10rpx;
 							}
 						}

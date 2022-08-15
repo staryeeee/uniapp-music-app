@@ -7,22 +7,22 @@
 			</view>
 			<view class="top-menu-right">
 				<view class="top-menu-nav">
-					<view class="nav-item" :class="{ active: navName == 'home' }" @click="handleMenuTo('home')">
+					<view class="nav-item" :class="{ active: name == 'home' }" @click="handleMenuTo('/pages/index/index')">
 						个性推荐
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'album-list' }" @click="handleMenuTo('album-list')">
+					<view class="nav-item" :class="{ active: name == 'album-list' }" @click="handleMenuTo('/pages/topmenu/album-list')">
 						歌单
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'radio-list' }" @click="handleMenuTo('radio-list')">
+					<view class="nav-item" :class="{ active: name == 'radio-list' }" @click="handleMenuTo('/pages/topmenu/radio-list')">
 						主播电台
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'hot-list' }" @click="handleMenuTo('hot-list')">
+					<view class="nav-item" :class="{ active: name == 'hot-list' }" @click="handleMenuTo('/pages/topmenu/hot-list')">
 						排行榜
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'singer-list' }" @click="handleMenuTo('singer-list')">
+					<view class="nav-item" :class="{ active: name == 'singer-list' }" @click="handleMenuTo('/pages/topmenu/singer-list')">
 						歌手
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'newest-list' }" @click="handleMenuTo('newest-list')">
+					<view class="nav-item" :class="{ active: name == 'newest-list' }" @click="handleMenuTo('/pages/topmenu/newest-list')">
 						最新音乐
 					</view>
 				</view>
@@ -41,60 +41,39 @@
 </template>
 
 <script>
-	import {
-		mapState,
-		mapActions
-	} from 'vuex'
-	
 	export default {
 		name: 'top-menu',
 		props: {
-			value: {
+			name: {
 				type: String,
 				default: 'home'
 			}
 		},
 		data() {
 			return {
-				keyword: '',
-				navName: this.value
+				keyword: ''
 			}
 		},
 		computed: {
-			...mapState('app', ['pageIndex', 'pageList']),
 			prevPage() {
-				return this.pageList.length > 0 && this.pageIndex > 0
+				return getCurrentPages().length > 1
 			},
-			nextPage() {
-				return this.pageList.length > 0 && this.pageIndex < this.pageList.length - 1
-			}
-		},
-		watch: {
-			value(val) {
-				this.navName = this.value
-			}
+			nextPage() {}
 		},
 		methods: {
-			...mapActions({
-				setPage: 'app/setPage',
-				setPrevPage: 'app/setPrevPage',
-				setNextPage: 'app/setNextPage'
-			}),
 			handlePrevPage() {
-				this.setPrevPage()
-				this.navName = this.pageList[this.pageIndex]
-				this.$emit('change', this.pageList[this.pageIndex])
+				uni.navigateBack(-1)
 			},
 			handleNextPage() {
-				this.setNextPage()
-				this.navName = this.pageList[this.pageIndex]
-				this.$emit('change', this.pageList[this.pageIndex])
+				uni.navigateBack(1)
 			},
 			handleMenuTo(data) {
-				this.setPage(data)
-				this.navName = data
 				this.$emit('change', data)
-			}
+			},
+			initData() { }
+		},
+		mounted() {
+			this.initData()
 		}
 	}
 </script>

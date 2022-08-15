@@ -19,16 +19,16 @@
 			</view>
 			<view class="nav-list">
 				<view class="list-body">
-					<view class="nav-item" :class="{ active: navName == 'home' }" @click="handleMenuTo('home')">
+					<view class="nav-item" :class="{ active: name == 'home' }" @click="handleMenuTo('/pages/index/index')">
 						<text>发现音乐</text>
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'fm-list' }" @click="handleMenuTo('fm-list')">
+					<view class="nav-item" :class="{ active: name == 'fm-list' }" @click="handleMenuTo('/pages/leftmenu/fm-list')">
 						<text>私人 FM</text>
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'video-list' }" @click="handleMenuTo('video-list')">
+					<view class="nav-item" :class="{ active: name == 'video-list' }" @click="handleMenuTo('/pages/leftmenu/video-list')">
 						<text>视频</text>
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'follow-list' }" @click="handleMenuTo('follow-list')">
+					<view class="nav-item" :class="{ active: name == 'follow-list' }" @click="handleMenuTo('/pages/leftmenu/follow-list')">
 						<text>关注</text>
 					</view>
 				</view>
@@ -38,16 +38,16 @@
 					<text class="head-title">我的音乐</text>
 				</view>
 				<view class="list-body">
-					<view class="nav-item" :class="{ active: navName == 'itunes-list' }" @click="handleMenuTo('itunes-list')">
+					<view class="nav-item" :class="{ active: name == 'itunes-list' }" @click="handleMenuTo('/pages/leftmenu/itunes-list')">
 						<text>iTunes 音乐</text>
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'download-list' }" @click="handleMenuTo('download-list')">
+					<view class="nav-item" :class="{ active: name == 'download-list' }" @click="handleMenuTo('/pages/leftmenu/download-list')">
 						<text>下载管理</text>
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'recent-list' }" @click="handleMenuTo('recent-list')">
+					<view class="nav-item" :class="{ active: name == 'recent-list' }" @click="handleMenuTo('/pages/leftmenu/recent-list')">
 						<text>最近播放</text>
 					</view>
-					<view class="nav-item" :class="{ active: navName == 'favorite-list' }" @click="handleMenuTo('favorite-list')">
+					<view class="nav-item" :class="{ active: name == 'favorite-list' }" @click="handleMenuTo('/pages/leftmenu/favorite-list')">
 						<text>我的收藏</text>
 					</view>
 				</view>
@@ -60,7 +60,7 @@
 					</view>
 				</view>
 				<view class="list-body">
-					<view class="nav-item" :class="{ active: navName == 'like-list' }" @click="handleMenuTo('like-list')">
+					<view class="nav-item" :class="{ active: name == 'like-list' }" @click="handleMenuTo('like-list')">
 						<text>我喜欢的音乐</text>
 					</view>
 				</view>
@@ -78,34 +78,22 @@
 	export default {
 		name: 'left-menu',
 		props: {
-			value: {
+			name: {
 				type: String,
 				default: 'home'
 			}
 		},
 		data() {
-			return {
-				navName: this.value,
-			}
-		},
-		watch: {
-			value(val) {
-				this.navName = this.value
-			}
+			return { }
 		},
 		computed: {
 			...mapState('auth', ['cookie', 'token', 'userInfo'])
 		},
 		methods: {
-			...mapActions({
-				setPage: 'app/setPage'
-			}),
 			handleAuth() {
 				this.$emit('auth', 'signin')
 			},
 			handleMenuTo(data) {
-				this.setPage(data)
-				this.navName = data
 				this.$emit('change', data)
 			}
 		}

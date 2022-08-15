@@ -298,3 +298,77 @@ export function fetchCommentMusic(data) {
         data: data
     })
 }
+
+// 获取 mv 数据
+export function fetchMvDetail(data) {
+    return request({
+        url: '/mv/detail',
+        method: 'get',
+        data: data
+    })
+}
+// mv 地址
+export function fetchMvUrl(data) {
+    return request({
+        url: '/mv/url',
+        method: 'get',
+        data: data
+    })
+}
+// mv 评论
+export function fetchCommentMv(data) {
+    return request({
+        url: '/comment/mv',
+        method: 'get',
+        data: data
+    })
+}
+// 相似 mv
+export function fetchSimiMv(data) {
+    return request({
+        url: '/simi/mv',
+        method: 'get',
+        data: data
+    })
+}
+
+// 电台 - 详情
+export function fetchDjDetail(data) {
+    return request({
+        url: '/dj/detail',
+        method: 'get',
+        data: data
+    })
+}
+// 电台 - 节目
+export function fetchDjProgram(data) {
+    return request({
+        url: '/dj/program',
+        method: 'get',
+        data: data
+    })
+}
+// 电台 - 节目详情
+export function fetchDjProgramDetail(data) {
+    return request({
+        url: '/dj/program/detail',
+        method: 'get',
+        data: data
+    })
+}
+// 电台节目评论
+export function fetchCommentDj(data) {
+    return request({
+        url: '/comment/dj',
+        method: 'get',
+        data: data
+    })
+}
+// 电台订阅者列表
+export function fetchDjSubscriber(data) {
+    return request({
+        url: '/dj/subscriber',
+        method: 'get',
+        data: data
+    })
+}

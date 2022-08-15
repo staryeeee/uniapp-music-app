@@ -1,56 +1,61 @@
 <template>
-	<view class="album-list-view">
-		<view class="album-list-head">
+	<view class="radio-list-view">
+		<view class="radio-list-head">
 			<view class="head-img-left">
-				<image class="img-head" mode="aspectFill" :src="playlist.coverImgUrl"></image>
+				<image class="img-head" mode="aspectFill" :src="radioData.picUrl || radioData.coverUrl"></image>
 			</view>
 			<view class="head-block">
 				<view class="head-title">
-					<text class="title-badge">歌单</text>
-					<text class="title-text">{{ playlist.name }}</text>
+					<text class="title-badge">电台</text>
+					<text class="title-text">{{ radioData.name }}</text>
 				</view>
 				<view class="head-time">
-					<image v-if="playlist.creator" class="img-creator" mode="aspectFill" :src="playlist.creator.avatarUrl"></image>
-					<text class="text-creator">{{ playlist.creator ? playlist.creator.nickname : '' }} {{ playlist.createTime | formatDate }}</text>
+					<image v-if="radioData.creator" class="img-creator" mode="aspectFill" :src="radioData.creator.avatarUrl"></image>
+					<text class="text-creator">{{ radioData.creator ? radioData.creator.nickname : '' }} {{ radioData.createTime | formatDate }}</text>
 					创建
 				</view>
 				<view class="head-action">
-					<u-button class="btn-action btn-play" type="primary" shape="circle" icon="map" text="播放全部" @click="handleMusics(musicList)"></u-button>
-					<u-button class="btn-action" type="default" plain shape="circle" icon="plus" :text="'收藏(' + (playlistDynamic.bookedCount || 0) + ')'"></u-button>
-					<u-button class="btn-action" type="default" plain shape="circle" icon="share" :text="'分享(' + (playlistDynamic.shareCount || 0) + ')'"></u-button>
+					<u-button class="btn-action btn-play" type="primary" shape="circle" icon="map" text="播放全部" @click="handleMusics"></u-button>
+					<u-button class="btn-action" type="default" plain shape="circle" icon="plus" :text="'收藏(' + (radioDataDynamic.bookedCount || 0) + ')'"></u-button>
+					<u-button class="btn-action" type="default" plain shape="circle" icon="share" :text="'分享(' + (radioDataDynamic.shareCount || 0) + ')'"></u-button>
 					<u-button class="btn-action" type="default" plain shape="circle" icon="download" text="下载全部"></u-button>
 				</view>
 				<view class="head-info">
-					<view class="head-text">
-						标签：<text class="text-tag" v-for="(item, index) in playlist.tags" :key="index"><text v-if="index != 0"> / </text>{{ item }}</text>
-					</view>
-					<view class="head-text">
-						歌曲数：{{ playlist.trackCount }} 播放数：{{ playlist.playCount }}
-					</view>
 					<view class="head-text text-wrap">
-						简介：<text class="text-desc">{{ playlist.description }}</text>
+						简介：<text class="text-desc">{{ radioData.desc || radioData.description }}</text>
 					</view>
 				</view>
 			</view>
 		</view>
-		<view class="album-list-body">
+		<view class="radio-list-body">
 			<view class="body-tabs">
 				<u-tabs :list="tabList" keyName="title" @change="handleTabChange"></u-tabs>
 			</view>
 			<view class="body-list">
 				<view v-if="tabIdx == 0" class="music-list">
 					<view class="music-item">
-						<view class="music-num"></view>
-						<view class="music-title" style="color:#999;">音乐标题</view>
-						<view class="music-author">歌手</view>
-						<view class="music-album">专辑</view>
-						<view class="music-time">时长</view>
+						<view class="music-num">共 {{ radioCount }} 期</view>
+						<view class="music-title"></view>
+						<view class="music-play"></view>
+						<view class="music-like"></view>
+						<view class="music-radio"></view>
+						<view class="music-time"></view>
 					</view>
-					<view class="music-item" v-for="(item, index) in musicList" :key="index" @click="handleMusics([item])">
-						<view class="music-num">{{ index < 9 ? '0' + (index + 1) : index + 1 }}</view>
+					<view class="music-item" v-show="item.name" v-for="(item, index) in musicList" :key="index" @click="handleMusic([item])">
+						<view class="music-num">{{ musicList.length - index < 10 ? '0' + (musicList.length - index) : musicList.length - index }}</view>
+						<view class="music-img">
+							<image v-if="item.coverUrl" class="img-music" :src="item.coverUrl" mode="aspectFill"></image>
+						</view>
 						<view class="music-title">{{ item.name }}</view>
-						<view class="music-author">{{ item.artists && item.artists[0] ? item.artists[0].name : '' }}</view>
-						<view class="music-album">{{ item.album ? item.album.name : '' }}</view>
+						<view class="music-play">
+							<u-icon name="play-circle" color="#999" size="16"></u-icon>
+							{{ item.listenerCount }}
+						</view>
+						<view class="music-like">
+							<u-icon name="thumb-up" color="#999" size="16"></u-icon>
+							{{ item.likedCount }}
+						</view>
+						<view class="music-publish">{{ item.scheduledPublishTime | formatDate }}</view>
 						<view class="music-time">{{ item.duration | formatDate('mm:ss') }}</view>
 					</view>
 				</view>
@@ -107,14 +112,14 @@
 		mapActions
 	} from 'vuex'
 	import {
-		fetchPlaylistDetail,
-		fetchCommentPlaylist,
-		fetchPlaylistDetailDynamic,
-		fetchPlaylistSubscribers
+		fetchDjDetail,
+		fetchCommentDj,
+		fetchDjProgram,
+		fetchDjSubscriber
 	} from '@/api/music'
 	
 	export default {
-		name: 'album-list',
+		name: 'radio-list',
 		props: {
 			id: {
 				type: String|Number,
@@ -125,15 +130,17 @@
 			return {
 				tabIdx: 0,
 				tabList: [
-					{ title: '歌曲列表' },
+					{ title: '节目' },
 					{ title: '评论', badge: { value: 0 } },
-					{ title: '收藏者' }
+					{ title: '订阅者' }
 				],
 				
-				playlist: {},
+				radioData: {},
+				
+				radioCount: 0,
 				musicList: [],
 				
-				playlistDynamic: {},
+				radioDataDynamic: {},
 				
 				commentList: [],
 				subscriberList: []
@@ -151,57 +158,51 @@
 			handleTabChange(data) {
 				this.tabIdx = data.index
 			},
-			handleMusics(data) {
+			handleMusics() {
+				let musics = []
+				this.musicList.forEach(item => {
+					musics.push(item.mainSong)
+				})
+				this.addToList(musics)
+			},
+			handleMusic(data) {
 				this.addToList(data)
 			},
-			getAlbumDetail() {
-				fetchPlaylistDetail({
-					id: this.id
+			getRadioDetail() {
+				fetchDjDetail({
+					rid: this.id
 				}).then(res => {
-					this.playlist = res.playlist
-					this.musicList = res.playlist.tracks.map(item => {
-						item.album = item.al
-						item.artists = item.ar
-						item.duration = item.dt
-						return item
-					})
+					this.radioData = res.data
+					this.musicList = res.data.songs || []
 				})
 			},
-			getAlbumDetailDynamic() {
-				fetchPlaylistDetailDynamic({
-					id: this.id
+			getRadioProgramDetail() {
+				fetchDjProgram({
+					rid: this.id
 				}).then(res => {
-					this.playlistDynamic = res
-					this.$set(this.tabList)
-					this.tabList = this.tabList.map(item => {
-						if (item.title == '评论') {
-							item.badge = {
-								value: res.commentCount > 100 ? '99+' : res.commentCount
-							}
-						}
-						return item
-					})
+					this.radioCount = res.count || 0
+					this.musicList = res.programs || []
 				})
 			},
-			getCommentPlaylist() {
-				fetchCommentPlaylist({
+			getRadioComment() {
+				fetchCommentDj({
 					id: this.id
 				}).then(res => {
-					this.commentList = res.comments
+					this.commentList = res.comments || []
 				})
 			},
-			getPlaylistSubscribers() {
-				fetchPlaylistSubscribers({
+			getRadioSubscribers() {
+				fetchDjSubscriber({
 					id: this.id
 				}).then(res => {
 					this.subscriberList = res.subscribers
 				})
 			},
 			initData() {
-				this.getAlbumDetail()
-				this.getAlbumDetailDynamic()
-				this.getCommentPlaylist()
-				this.getPlaylistSubscribers()
+				this.getRadioDetail()
+				this.getRadioProgramDetail()
+				this.getRadioComment()
+				this.getRadioSubscribers()
 			}
 		},
 		mounted() {
@@ -211,10 +212,10 @@
 </script>
 
 <style lang="scss" scoped>
-	.album-list-view {
+	.radio-list-view {
 		padding: 40rpx 60rpx 140rpx 60rpx;
 		
-		.album-list-head {
+		.radio-list-head {
 			display: flex;
 			justify-content: flex-start;
 			
@@ -235,9 +236,11 @@
 				
 				.head-title {
 					display: flex;
-					align-items: center;
+					align-items: flex-start;
 					
 					.title-badge {
+						position: relative;
+						top: 10rpx;
 						margin-right: 20rpx;
 						display: inline-block;
 						zoom: 1;
@@ -248,6 +251,7 @@
 						line-height: 38rpx;
 						font-size: 26rpx;
 						color: #cb3631;
+						white-space: nowrap;
 						border: 1px solid #cb3631;
 						border-radius: 6rpx;
 					}
@@ -332,7 +336,7 @@
 			}
 		}
 		
-		.album-list-body {
+		.radio-list-body {
 			margin-top: 60rpx;
 			
 			.body-list {
@@ -342,36 +346,74 @@
 						justify-content: flex-start;
 						align-items: center;
 						width: 100%;
-						height: 68rpx;
+						margin-bottom: 20rpx;
 						
 						.music-num {
-							width: 5%;
+							width: 120rpx;
 							font-size: 24rpx;
 							color: #aaa;
 						}
 						
+						.music-img {
+							width: 120rpx;
+							height: 120rpx;
+							
+							.img-music {
+								width: 120rpx;
+								height: 120rpx;
+								border-radius: 10rpx;
+								overflow: hidden;
+							}
+						}
+						
 						.music-title {
-							width: 40%;
+							margin-left: 20rpx;
+							flex: 1;
 							font-size: 24rpx;
 							color: #333;
 						}
 						
-						.music-author {
-							width: 20%;
+						.music-play {
+							width: 200rpx;
 							font-size: 24rpx;
 							color: #999;
+							
+							::v-deep .u-icon {
+								display: inline-block;
+								zoom: 1;
+								margin-right: 10rpx;
+							}
 						}
 						
-						.music-album {
+						.music-like {
+							width: 200rpx;
+							font-size: 24rpx;
+							color: #999;
+							
+							::v-deep .u-icon {
+								display: inline-block;
+								zoom: 1;
+								margin-right: 10rpx;
+							}
+						}
+						
+						.music-radio {
 							width: 30%;
 							font-size: 24rpx;
 							color: #999;
 						}
 						
-						.music-time {
-							width: 5%;
+						.music-publish {
+							width: 160rpx;
 							font-size: 24rpx;
 							color: #aaa;
+						}
+						
+						.music-time {
+							width: 160rpx;
+							font-size: 24rpx;
+							color: #aaa;
+							text-align: right;
 						}
 					}
 				}
@@ -446,6 +488,7 @@
 				}
 				
 				.subscriber-group {
+					margin-top: 60rpx;
 					
 					::v-deep .u-row {
 						flex-wrap: wrap;

@@ -1,6 +1,6 @@
 <template>
-	<view class="song-list-view">
-		<view class="song-list-top">
+	<view class="album-list-view">
+		<view class="album-list-top">
 			<view class="top-wrap" v-for="(item, index) in bannerList" :key="index">
 				<view class="top-img-top">
 					<image class="img-top" mode="aspectFill" :src="item.coverImgUrl"></image>
@@ -12,7 +12,7 @@
 				</view>
 			</view>
 		</view>
-		<div class="song-list-head">
+		<div class="album-list-head">
 			<div class="head-left">
 				<view class="head-filter" @click="handleNavChange('全部')">全部歌单</view>
 			</div>
@@ -24,7 +24,7 @@
 				</view>
 			</div>
 		</div>
-		<view class="song-list-body">
+		<view class="album-list-body">
 			<u-row>
 				<u-col span="3" v-for="(item, index) in musicList" :key="index" @click="handleAlbum(item)">
 					<view class="col-wrap">
@@ -38,7 +38,7 @@
 				</u-col>
 			</u-row>
 		</view>
-		<view v-show="musicList.length > 0 && total > pageSize" class="song-list-pagination">
+		<view v-show="musicList.length > 0 && total > pageSize" class="album-list-pagination">
 			<uni-pagination title="" type="line" :total="this.total" :pageSize="this.pageSize" @change="handlePageChange"></uni-pagination>
 		</view>
 	</view>
@@ -52,7 +52,7 @@
 	} from '@/api/music'
 	
 	export default {
-		name: 'song-list',
+		name: 'album-list',
 		data() {
 			return {
 				bannerList: [],
@@ -82,7 +82,9 @@
 		},
 		methods: {
 			handleAlbum(data) {
-				this.$emit('album', data.id)
+				uni.navigateTo({
+					url: '/pages/album/index?id=' + data.id
+				})
 			},
 			handleNavChange(data) {
 				this.navList = this.navList.map((item, index) => {
@@ -140,10 +142,10 @@
 </script>
 
 <style lang="scss" scoped>
-	.song-list-view {
+	.album-list-view {
 		padding: 40rpx 60rpx 160rpx 60rpx;
 		
-		.song-list-top {
+		.album-list-top {
 			padding: 30rpx;
 			background-color: #5e7273;
 			border-radius: 10rpx;
@@ -212,7 +214,7 @@
 			}
 		}
 		
-		.song-list-head {
+		.album-list-head {
 			padding: 30rpx 0;
 			display: flex;
 			justify-content: space-between;
@@ -256,7 +258,7 @@
 			}
 		}
 		
-		.song-list-body {
+		.album-list-body {
 			::v-deep .u-row {
 				flex-wrap: wrap;
 				margin-right: -36rpx;

@@ -15,6 +15,6 @@
 
 <style lang="scss" scoped>
 	.demo-view {
-		padding: 40rpx 60rpx;
+		padding: 40rpx 60rpx 140rpx 60rpx;
 	}
 </style>
